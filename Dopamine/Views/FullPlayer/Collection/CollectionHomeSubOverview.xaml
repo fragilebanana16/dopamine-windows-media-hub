@@ -1,0 +1,194 @@
+﻿<UserControl x:Class="Dopamine.Views.FullPlayer.Collection.CollectionHomeSubOverview"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Dopamine.Views.FullPlayer.Collection"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+             xmlns:prism="http://www.codeplex.com/prism"
+             xmlns:ffme="clr-namespace:Unosquare.FFME;assembly=ffme.win"
+             
+      xmlns:prismMvvm="clr-namespace:Prism.Mvvm;assembly=Prism.Wpf"
+             prismMvvm:ViewModelLocator.AutoWireViewModel="True"
+             >
+
+    <UserControl.Resources>
+        <!-- 通用阴影效果 -->
+        <DropShadowEffect x:Key="CardShadow" Color="#1A1A1A" Opacity="0.08" BlurRadius="12" ShadowDepth="2" Direction="270"/>
+
+        <!-- Dashboard卡片样式 -->
+        <Style x:Key="DashCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="14"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Effect" Value="{StaticResource CardShadow}"/>
+        </Style>
+
+        <!-- 顶部统计小卡片样式 -->
+        <Style x:Key="StatCardStyle" TargetType="Border" BasedOn="{StaticResource DashCardStyle}">
+            <Setter Property="Padding" Value="18,16"/>
+        </Style>
+    </UserControl.Resources>
+    <Border Background="#F5F6F8">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="28">
+            <StackPanel>
+                <!-- 顶部标题 + 操作 -->
+                <Grid Margin="0,0,0,24">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="欢迎回来 👋" FontSize="22" FontWeight="Bold" Foreground="#1A1A1A"/>
+                        <TextBlock Text="这是你的多媒体中心总览" FontSize="13" Foreground="#8A8A8E" Margin="0,4,0,0"/>
+                    </StackPanel>
+                    <Button Grid.Column="1" Content="+ 添加媒体库" Padding="16,9" 
+                                    Background="#5B5FEF" Foreground="White" BorderThickness="0"
+                                    FontSize="13" Cursor="Hand">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="8"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                </Grid>
+
+                <!-- 顶部统计卡片行 -->
+                <Grid Margin="0,0,0,24">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Style="{StaticResource StatCardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="🎵 音乐曲目" FontSize="12" Foreground="#8A8A8E"/>
+                            <TextBlock Text="12,480" FontSize="24" FontWeight="Bold" Foreground="#1A1A1A" Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource StatCardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="🎬 电影" FontSize="12" Foreground="#8A8A8E"/>
+                            <TextBlock Text="356" FontSize="24" FontWeight="Bold" Foreground="#1A1A1A" Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="4" Style="{StaticResource StatCardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="📺 剧集" FontSize="12" Foreground="#8A8A8E"/>
+                            <TextBlock Text="58" FontSize="24" FontWeight="Bold" Foreground="#1A1A1A" Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </Border>
+                    <Border Grid.Column="6" Style="{StaticResource StatCardStyle}">
+                        <StackPanel>
+                            <TextBlock Text="💾 存储占用" FontSize="12" Foreground="#8A8A8E"/>
+                            <TextBlock Text="1.2 TB" FontSize="24" FontWeight="Bold" Foreground="#1A1A1A" Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- 功能分类卡片网格（音乐/影视/管理中心等） -->
+                <TextBlock Text="快速进入" FontSize="15" FontWeight="SemiBold" Foreground="#1A1A1A" Margin="0,0,0,12"/>
+                <Grid Margin="0,0,0,24">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Style="{StaticResource DashCardStyle}" Height="140" Cursor="Hand">
+                        <StackPanel VerticalAlignment="Center">
+                            <Border Width="44" Height="44" CornerRadius="10" Background="#FCEEEA" HorizontalAlignment="Left">
+                                <TextBlock Text="🎵" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="音乐" FontSize="16" FontWeight="SemiBold" Foreground="#1A1A1A" Margin="0,14,0,2"/>
+                            <TextBlock Text="浏览专辑、歌单与艺术家" FontSize="12" Foreground="#8A8A8E"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="2" Style="{StaticResource DashCardStyle}" Height="140" Cursor="Hand">
+                        <StackPanel VerticalAlignment="Center">
+                            <Border Width="44" Height="44" CornerRadius="10" Background="#EAF0FC" HorizontalAlignment="Left">
+                                <TextBlock Text="🎬" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="影视" FontSize="16" FontWeight="SemiBold" Foreground="#1A1A1A" Margin="0,14,0,2"/>
+                            <TextBlock Text="电影与剧集合集" FontSize="12" Foreground="#8A8A8E"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="4" Style="{StaticResource DashCardStyle}" Height="140" Cursor="Hand">
+                        <StackPanel VerticalAlignment="Center">
+                            <Border Width="44" Height="44" CornerRadius="10" Background="#EAFBEF" HorizontalAlignment="Left">
+                                <TextBlock Text="⚙️" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                            <TextBlock Text="管理中心" FontSize="16" FontWeight="SemiBold" Foreground="#1A1A1A" Margin="0,14,0,2"/>
+                            <TextBlock Text="媒体库、用户与系统设置" FontSize="12" Foreground="#8A8A8E"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- 最近播放 / 最近添加 卡片网格 -->
+                <TextBlock Text="最近添加" FontSize="15" FontWeight="SemiBold" Foreground="#1A1A1A" Margin="0,0,0,12"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Style="{StaticResource DashCardStyle}" Padding="0">
+                        <StackPanel>
+                            <Border Height="90" CornerRadius="14,14,0,0" Background="#D8D9F5"/>
+                            <StackPanel Margin="12,10,12,12">
+                                <TextBlock Text="夜曲合集" FontSize="13" FontWeight="Medium" Foreground="#1A1A1A" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Text="专辑 · 12 曲" FontSize="11" Foreground="#8A8A8E" Margin="0,2,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="2" Style="{StaticResource DashCardStyle}" Padding="0">
+                        <StackPanel>
+                            <Border Height="90" CornerRadius="14,14,0,0" Background="#F5D9D9"/>
+                            <StackPanel Margin="12,10,12,12">
+                                <TextBlock Text="边境之外" FontSize="13" FontWeight="Medium" Foreground="#1A1A1A" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Text="电影 · 2小时18分" FontSize="11" Foreground="#8A8A8E" Margin="0,2,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="4" Style="{StaticResource DashCardStyle}" Padding="0">
+                        <StackPanel>
+                            <Border Height="90" CornerRadius="14,14,0,0" Background="#D9F0E0"/>
+                            <StackPanel Margin="12,10,12,12">
+                                <TextBlock Text="深海纪事" FontSize="13" FontWeight="Medium" Foreground="#1A1A1A" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Text="剧集 · 第2季" FontSize="11" Foreground="#8A8A8E" Margin="0,2,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="6" Style="{StaticResource DashCardStyle}" Padding="0">
+                        <StackPanel>
+                            <Border Height="90" CornerRadius="14,14,0,0" Background="#FBE9D0"/>
+                            <StackPanel Margin="12,10,12,12">
+                                <TextBlock Text="晨光练习曲" FontSize="13" FontWeight="Medium" Foreground="#1A1A1A" TextTrimming="CharacterEllipsis"/>
+                                <TextBlock Text="播客 · 第34集" FontSize="11" Foreground="#8A8A8E" Margin="0,2,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Border>
+</UserControl>

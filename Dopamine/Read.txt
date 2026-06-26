@@ -1,0 +1,5 @@
+Icons
+https://learn.microsoft.com/zh-cn/windows/apps/design/iconography/segoe-ui-symbol-font#icon-list
+
+
+- 播放控制条Dopamine\Views\Common\CollectionPlaybackControls.xaml

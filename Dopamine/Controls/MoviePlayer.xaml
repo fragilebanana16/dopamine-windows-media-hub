@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="Dopamine.Controls.MoviePlayer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="clr-namespace:Dopamine.Controls"
+             mc:Ignorable="d" 
+             xmlns:ffme="clr-namespace:Unosquare.FFME;assembly=ffme.win"
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    
+    <Grid MouseLeftButtonDown ="Window_MouseDoubleClick" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="60"/>
+        </Grid.RowDefinitions>
+        <Grid Name="Player">
+            <ffme:MediaElement x:Name="Media" Width="400" Height="400" Background="red"
+                       LoadedBehavior="Manual"
+                       UnloadedBehavior="Manual"
+                       Stretch="Uniform" />
+
+            <DockPanel x:Name="LayoutPanel" LastChildFill="False">
+                <controls:ControllerPanelControl
+                x:Name="ControllerPanel"
+                DockPanel.Dock="Bottom" />
+            </DockPanel>
+        </Grid>
+        
+    </Grid>
+</UserControl>

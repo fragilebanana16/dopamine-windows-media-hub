@@ -1,0 +1,614 @@
+﻿<UserControl x:Class="Dopamine.Views.FullPlayer.Collection.CollectionHomeSubSearch"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Dopamine.Views.FullPlayer.Collection"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800"
+                          xmlns:prism="http://www.codeplex.com/prism"
+                          xmlns:pc="clr-namespace:Dopamine.Controls"
+             
+      xmlns:prismMvvm="clr-namespace:Prism.Mvvm;assembly=Prism.Wpf"
+             prismMvvm:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+             >
+    <UserControl.Resources>
+
+        <BooleanToVisibilityConverter x:Key="BoolVis"/>
+
+        <Style x:Key="SearchBoxStyle" TargetType="TextBox">
+            <Setter Property="Background"              Value="{DynamicResource Brush_TextBoxBackground}"/>
+            <Setter Property="Foreground"              Value="{DynamicResource Brush_PrimaryText}"/>
+            <Setter Property="CaretBrush"              Value="{DynamicResource Brush_Accent}"/>
+            <Setter Property="BorderBrush"             Value="{DynamicResource Brush_ControlBorder}"/>
+            <Setter Property="BorderThickness"         Value="1"/>
+            <Setter Property="FontSize"                Value="18"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="16">
+                            <Grid>
+                                <ScrollViewer x:Name="PART_ContentHost"
+                                          Margin="20,0,48,0"
+                                          VerticalAlignment="Center"/>
+                                <TextBlock x:Name="Hint"
+                                       Text="搜索音乐、影视、笔记…"
+                                       Foreground="{DynamicResource Brush_SecondaryText}"
+                                       FontSize="18"
+                                       Margin="21,0,0,0"
+                                       VerticalAlignment="Center"
+                                       IsHitTestVisible="False"
+                                       Visibility="Collapsed"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Text" Value="">
+                                <Setter TargetName="Hint" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="{DynamicResource Brush_WindowButtonPressedBackground}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SearchBtn" TargetType="Button">
+            <Setter Property="Background" Value="{DynamicResource Brush_RegularButtonBackground}"/>
+            <Setter Property="Foreground" Value="{DynamicResource Brush_RegularButtonText}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource Brush_ControlBorder}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize"     Value="15"/>
+            <Setter Property="FontWeight"   Value="SemiBold"/>
+            <Setter Property="Cursor"       Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="14" Padding="28,0">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource Brush_Accent}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource Brush_RegularButtonAccentText}"/>
+                                <Setter Property="BorderBrush" Value="Transparent"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="{DynamicResource Brush_DimBackground}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource Brush_SecondaryText}"/>
+                                <Setter Property="BorderBrush" Value="Transparent"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="GhostBtn" TargetType="Button">
+            <Setter Property="Background"   Value="Transparent"/>
+            <Setter Property="BorderBrush"  Value="Transparent"/>
+            <Setter Property="Foreground"   Value="{DynamicResource Brush_SecondaryText}"/>
+            <Setter Property="Cursor"       Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                            CornerRadius="8" Padding="8,5">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource Brush_ItemHovered}"/>
+                                <Setter Property="Foreground" Value="{DynamicResource Brush_PrimaryText}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="HistBtn" TargetType="Button">
+            <Setter Property="Background"                Value="Transparent"/>
+            <Setter Property="BorderBrush"               Value="Transparent"/>
+            <Setter Property="Foreground"                Value="{DynamicResource Brush_PrimaryText}"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Cursor"                    Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                            CornerRadius="9" Padding="10,8">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource Brush_ItemHovered}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="GroupCard" TargetType="Border">
+            <Setter Property="Background"   Value="{DynamicResource Brush_MainWindowBackground}" />
+            <Setter Property="BorderBrush"  Value="{DynamicResource Brush_ItemSeparator}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding"      Value="20,16"/>
+            <Setter Property="Margin"       Value="0,0,0,14"/>
+        </Style>
+
+        <Style x:Key="ResultRow" TargetType="Border">
+            <Setter Property="Background"   Value="Transparent"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding"      Value="10,9"/>
+            <Setter Property="Margin"       Value="0,2"/>
+            <Setter Property="Cursor"       Value="Hand"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource Brush_ItemHovered}" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+    </UserControl.Resources>
+
+    <!-- ═══════════════════════════════════════════════════════
+         根容器：HomePanel / ResultPanel 叠放，由 code-behind 切换
+    ════════════════════════════════════════════════════════ -->
+    <Grid>
+
+        <!-- ────────────────────────────────────────────────────
+             【主页】IsResultMode = False
+             整页只有一个搜索框
+        ─────────────────────────────────────────────────── -->
+        <Grid x:Name="HomePanel">
+            <Grid.Background>
+                <RadialGradientBrush GradientOrigin="0.5,0.42" RadiusX="0.85" RadiusY="0.7">
+                    <GradientStop Color="#141419" Offset="0"/>
+                    <GradientStop Color="#111113" Offset="1.0"/>
+                </RadialGradientBrush>
+            </Grid.Background>
+
+            <Ellipse Width="520" Height="520" Opacity="0.045"
+         HorizontalAlignment="Center" VerticalAlignment="Center"
+         Margin="0,-60,0,0">
+                <Ellipse.Fill>
+                    <RadialGradientBrush>
+                        <GradientStop Color="#6366F1" Offset="0"/>
+                        <GradientStop Color="#A855F7" Offset="0.5"/>
+                        <GradientStop Color="Transparent" Offset="1.0"/>
+                    </RadialGradientBrush>
+                </Ellipse.Fill>
+            </Ellipse>
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0.1*"/>
+                    <RowDefinition Height="0.9*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="1"  HorizontalAlignment="Center"
+                        Width="560">
+                    <!-- 标题 -->
+                    <TextBlock Text="✦"
+                           FontSize="32" Foreground="{DynamicResource Brush_Accent}"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,6"/>
+                    <TextBlock Text="搜索"
+                           FontSize="42" FontWeight="Bold"
+                           Foreground="#EEEEF5"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,6"/>
+                    <TextBlock Text="音乐 · 影视 · 笔记 · 文件"
+                           FontSize="13" Foreground="#44445A"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,44"/>
+
+                    <!-- 搜索行 -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- 搜索框（历史 Popup 附着于此） -->
+                        <Grid Grid.Column="0">
+                            <TextBox x:Name="HomeSearchBox"
+                                 Style="{StaticResource SearchBoxStyle}"
+                                 Height="58"
+                                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}">
+                                <TextBox.InputBindings>
+                                    <KeyBinding Key="Return" Command="{Binding SearchCommand}"/>
+                                </TextBox.InputBindings>
+                            </TextBox>
+
+                            <!-- 历史 Popup -->
+                            <Popup x:Name="HistoryPopup"
+                               PlacementTarget="{Binding ElementName=HomeSearchBox}"
+                               Placement="Bottom"
+                               VerticalOffset="6"
+                               IsOpen="{Binding IsHistoryVisible}"
+                               StaysOpen="False"
+                               AllowsTransparency="True"
+                               PopupAnimation="Fade"
+                               MinWidth="560">
+                                <Border Background="#1C1C28"
+                                    BorderBrush="#2A2A3A"
+                                    BorderThickness="1"
+                                    CornerRadius="16"
+                                    Padding="10,10">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#000000" Opacity="0.55"
+                                                      BlurRadius="28" ShadowDepth="6"/>
+                                    </Border.Effect>
+
+                                    <StackPanel>
+                                        <!-- Popup 头部 -->
+                                        <Grid Margin="4,0,4,8">
+                                            <TextBlock Text="最近搜索"
+                                                   Foreground="#44445A" FontSize="11"
+                                                   VerticalAlignment="Center"/>
+                                            <Button HorizontalAlignment="Right"
+                                                Style="{StaticResource GhostBtn}"
+                                                Command="{Binding ToggleHistoryCommand}">
+                                                <TextBlock Text="关闭历史" FontSize="11"/>
+                                            </Button>
+                                        </Grid>
+
+                                        <!-- 历史列表 -->
+                                        <ItemsControl ItemsSource="{Binding SearchHistory}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <!-- 点击填充并搜索 -->
+                                                        <Button Grid.Column="0"
+                                                            Style="{StaticResource HistBtn}"
+                                                            Command="{Binding DataContext.SelectHistoryCommand,
+                                                                      RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                            CommandParameter="{Binding}">
+                                                            <StackPanel Orientation="Horizontal" Margin="2,0">
+                                                                <TextBlock Text="⟳" FontSize="13"
+                                                                       Foreground="#44445A"
+                                                                       Margin="0,0,10,0"
+                                                                       VerticalAlignment="Center"/>
+                                                                <TextBlock Text="{Binding}"
+                                                                       FontSize="14"
+                                                                       VerticalAlignment="Center"/>
+                                                            </StackPanel>
+                                                        </Button>
+
+                                                        <!-- 删除单条 -->
+                                                        <Button Grid.Column="1"
+                                                            Style="{StaticResource GhostBtn}"
+                                                            Command="{Binding DataContext.DeleteHistoryItemCommand,
+                                                                      RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                            CommandParameter="{Binding}"
+                                                            VerticalAlignment="Center">
+                                                            <TextBlock Text="✕" FontSize="11"/>
+                                                        </Button>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </Border>
+                            </Popup>
+                        </Grid>
+
+                        <!-- 搜索按钮 -->
+                        <Button Grid.Column="2"
+                            Style="{StaticResource SearchBtn}"
+                            Height="58"
+                            Content="搜 索"
+                            IsEnabled="{Binding HasText}"
+                            Command="{Binding SearchCommand}"/>
+                    </Grid>
+
+                    <!-- 历史已关闭提示 -->
+                    <TextBlock Margin="0,14,0,0"
+                           HorizontalAlignment="Center"
+                           FontSize="12" Foreground="#2D2D40"
+                           Visibility="{Binding ShowHistory, Converter={StaticResource InvertingBooleanToVisibilityConverter}}">
+                    历史记录已关闭 ·
+                    <Hyperlink Foreground="#6A5FD4"
+                               Command="{Binding ToggleHistoryCommand}">重新开启</Hyperlink>
+                    </TextBlock>
+
+                </StackPanel>
+            </Grid>
+
+            <!-- 居中主体 -->
+
+        </Grid>
+
+        <!-- ────────────────────────────────────────────────────
+             【结果页】IsResultMode = True
+             整页：左侧分类导航 + 右侧结果卡片
+        ─────────────────────────────────────────────────── -->
+        <Grid x:Name="ResultPanel" Visibility="Collapsed">
+            <Grid.Background>
+                <SolidColorBrush Color="{DynamicResource Color_DarkGrey2}"/>
+            </Grid.Background>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <!-- 顶部返回栏 -->
+                <RowDefinition Height="*"/>
+                <!-- 内容区 -->
+            </Grid.RowDefinitions>
+
+            <!-- ── 顶部栏：返回 + 搜索词 + 分类下拉 ────────────── -->
+            <Border Grid.Row="0"
+        BorderBrush="#1E1E2C"
+        BorderThickness="0,0,0,1"
+        Padding="24,14">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- 返回按钮 -->
+
+                    <pc:IconTextButton Grid.Column="0" Glyph="&#xE966;" GlyphSize="23" Margin="0,0,0,0" HorizontalAlignment="Left"  Foreground="{DynamicResource Brush_Accent}" Command="{Binding Path=BackCommand}"/>
+
+                    <!-- 搜索词展示 -->
+                    <StackPanel Grid.Column="1" Orientation="Horizontal"
+                    VerticalAlignment="Center">
+                        <TextBlock Text="「" Foreground="{ DynamicResource Brush_PrimaryText}" FontSize="15"/>
+                        <TextBlock Text="{Binding SearchText}"
+                       Foreground="{DynamicResource Brush_Accent}" FontSize="15" FontWeight="SemiBold"/>
+                        <TextBlock Text="」的结果" Foreground="{ DynamicResource Brush_PrimaryText}" FontSize="15"/>
+                    </StackPanel>
+
+                    <ComboBox Grid.Column="2"
+          x:Name="CategoryComboBox"
+          VerticalAlignment="Center"
+          Width="140"
+          SelectedIndex="0"
+          FontSize="13"
+          Cursor="Hand">
+                        <ComboBox.Style>
+                            <Style TargetType="ComboBox">
+                                <Setter Property="Foreground" Value="{DynamicResource Brush_PrimaryText}"/>
+                                <Setter Property="FontSize" Value="13"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ComboBox">
+                                            <Grid>
+                                                <ToggleButton IsChecked="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}"
+                                          Cursor="Hand">
+                                                    <ToggleButton.Style>
+                                                        <Style TargetType="ToggleButton">
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="ToggleButton">
+                                                                        <Border Background="{DynamicResource Card_Background}"
+                                                            BorderBrush="{DynamicResource Brush_Accent}"
+                                                            BorderThickness="1"
+                                                            CornerRadius="10"
+                                                            Padding="14,8"
+                                                            x:Name="BtnBorder">
+                                                                            <Grid>
+                                                                                <Grid.ColumnDefinitions>
+                                                                                    <ColumnDefinition Width="*"/>
+                                                                                    <ColumnDefinition Width="20"/>
+                                                                                </Grid.ColumnDefinitions>
+
+                                                                                <ContentPresenter Grid.Column="0"
+                                                                              Content="{Binding SelectionBoxItem, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                                                              TextElement.Foreground="{DynamicResource Brush_PrimaryText}"
+                                                                              VerticalAlignment="Center"/>
+
+                                                                                <TextBlock Grid.Column="1"
+                                                                       Text="▾"
+                                                                       FontSize="11"
+                                                                       Foreground="{DynamicResource Border_Default}"
+                                                                       HorizontalAlignment="Center"
+                                                                       VerticalAlignment="Center"
+                                                                       x:Name="ArrowText"/>
+                                                                            </Grid>
+                                                                        </Border>
+                                                                        <ControlTemplate.Triggers>
+                                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                                <Setter TargetName="ArrowText" Property="Foreground" Value="{DynamicResource Brush_Accent}"/>
+
+                                                                            </Trigger>
+                                                                            <Trigger Property="IsChecked" Value="True">
+                                                                                <Setter TargetName="BtnBorder" Property="BorderBrush" Value="{DynamicResource Brush_Accent}"/>
+                                                                                <Setter TargetName="ArrowText" Property="Foreground" Value="{DynamicResource Brush_Accent}"/>
+                                                                            </Trigger>
+                                                                        </ControlTemplate.Triggers>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style>
+                                                    </ToggleButton.Style>
+                                                </ToggleButton>
+
+                                                <Popup IsOpen="{TemplateBinding IsDropDownOpen}"
+                                   AllowsTransparency="True"
+                                   Placement="Bottom"
+                                   VerticalOffset="4"
+                                   PopupAnimation="Fade"
+                                   StaysOpen="False">
+                                                    <Border Background="{DynamicResource Brush_WindowHeaderBackground}"
+                                        BorderBrush="{DynamicResource Border_Default}"
+                                        BorderThickness="1"
+                                        CornerRadius="12"
+                                        Padding="6"
+                                        MinWidth="140">
+                                                        <Border.Effect>
+                                                            <DropShadowEffect Color="#000000" Opacity="0.5"
+                                                          BlurRadius="20" ShadowDepth="4"/>
+                                                        </Border.Effect>
+                                                        <ItemsPresenter/>
+                                                    </Border>
+                                                </Popup>
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+
+                                <Setter Property="ItemContainerStyle">
+                                    <Setter.Value>
+                                        <Style TargetType="ComboBoxItem">
+                                            <Setter Property="Foreground" Value="{DynamicResource Brush_PrimaryText}"/>
+                                            <Setter Property="FontSize" Value="13"/>
+                                            <Setter Property="Cursor" Value="Hand"/>
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="ComboBoxItem">
+                                                        <Border Background="{TemplateBinding Background}"
+                                            CornerRadius="8"
+                                            Padding="12,8">
+                                                            <ContentPresenter/>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="{DynamicResource Border_Default}"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsSelected" Value="True">
+                                                                <Setter Property="Foreground" Value="{DynamicResource Brush_Accent}"/>
+                                                                <Setter Property="Background" Value="{DynamicResource Card_Background}"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ComboBox.Style>
+
+                        <ComboBoxItem Tag="">全部</ComboBoxItem>
+                        <ComboBoxItem Tag="Music">音乐</ComboBoxItem>
+                        <ComboBoxItem Tag="Video">影视</ComboBoxItem>
+                        <ComboBoxItem Tag="Note">笔记</ComboBoxItem>
+                        <ComboBoxItem Tag="File">文件</ComboBoxItem>
+                        <ComboBoxItem Tag="Contact">联系人</ComboBoxItem>
+                    </ComboBox>
+                </Grid>
+            </Border>
+            <!-- ── 内容区：左侧锚点导航 + 右侧结果 ─────────── -->
+            <Grid Grid.Row="1">
+
+                <!-- 右侧结果滚动区 -->
+                <ScrollViewer x:Name="ResultScroller"
+              VerticalScrollBarVisibility="Auto"
+              HorizontalScrollBarVisibility="Disabled"
+              Padding="28,24,28,32">
+                    <ItemsControl ItemsSource="{Binding ResultGroups}"
+                  VirtualizingPanel.IsVirtualizing="True"
+                  VirtualizingPanel.VirtualizationMode="Recycling">
+
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <VirtualizingStackPanel />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource GroupCard}" Tag="{Binding CategoryKey}">
+                                    <StackPanel>
+                                        <Grid Margin="0,0,0,14">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" CornerRadius="9" Padding="9,5" Margin="0,0,12,0">
+                                                <TextBlock Text="{Binding CategoryIcon}" FontFamily="Segoe MDL2 Assets" FontSize="15" Foreground="{DynamicResource Brush_Accent}"/>
+                                            </Border>
+                                            <TextBlock Grid.Column="1" Text="{Binding CategoryName}" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource Brush_PrimaryText}" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="2" FontSize="12" Foreground="{DynamicResource Brush_PrimaryText}" VerticalAlignment="Center">
+                                <Run Text="{Binding Items.Count, Mode=OneWay}"/><Run Text="个结果"/>
+                                            </TextBlock>
+                                        </Grid>
+
+                                        <Rectangle Height="1" Fill="#1E1E2C" Margin="0,0,0,10"/>
+
+                                        <ItemsControl ItemsSource="{Binding Items}"
+                                      
+                                                      VirtualizingPanel.IsVirtualizing="True"
+                                      VirtualizingPanel.VirtualizationMode="Recycling">
+
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <VirtualizingStackPanel />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Style="{StaticResource ResultRow}" MouseLeftButtonDown="SearchItem_MouseDoubleClick">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="40"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="4,0,12,0">
+                                                                <TextBlock Text="{Binding Title}" FontSize="14" Foreground="#EEEEF5" TextTrimming="CharacterEllipsis"/>
+                                                                <TextBlock Text="{Binding Subtitle}" FontSize="12" Foreground="#55556A" Margin="0,3,0,0"/>
+                                                            </StackPanel>
+
+                                                            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                                                <pc:IconTextButton 
+                                                                    Glyph="&#xE768;" 
+                                                                    GlyphSize="16" 
+                                                                    Foreground="{DynamicResource Brush_Accent}" 
+                                                                    Margin="0,0,15,0"
+                                                                    Command="{Binding DataContext.PlayTrackCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                                    CommandParameter="{Binding}"/>
+                                                                <pc:IconTextButton 
+                                                                    Glyph="&#xE838;" 
+                                                                    GlyphSize="16" 
+                                                                    Foreground="{DynamicResource Brush_Accent}" 
+                                                                    Margin="0,0,15,0"
+                                                                    Command="{Binding DataContext.ViewInExplorerCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                                    CommandParameter="{Binding}"/>
+                                                                
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+
+    </Grid>
+</UserControl>

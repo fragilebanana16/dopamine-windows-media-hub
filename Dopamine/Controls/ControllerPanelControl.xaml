@@ -1,0 +1,107 @@
+﻿<UserControl x:Class="Dopamine.Controls.ControllerPanelControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Dopamine.Controls"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <LinearGradientBrush x:Key="ShadedBackgroundBrush" StartPoint="0,0" EndPoint="0,1">
+            <GradientStopCollection>
+                <GradientStop Offset="0.0" Color="#000A0F1D" />
+                <GradientStop Offset="0.5" Color="#330A0F1D" />
+                <GradientStop Offset="0.8" Color="#880A0F1D" />
+                <GradientStop Offset="1.0" Color="#C00A0F1D" />
+            </GradientStopCollection>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="CustomSliderForegroundBrush" Color="#FF1E91EA"/>
+        <SolidColorBrush x:Key="CustomSliderBackgroundBrush" Color="#55ffffff" />
+        <SolidColorBrush x:Key="CustomSliderHighlightBrush" Color="#FFEFEFEF"/>
+
+        <!-- Position Slider Control -->
+        <ControlTemplate x:Key="PositionSliderThumbTemplate" TargetType="{x:Type Thumb}">
+            <Grid HorizontalAlignment="Center" UseLayoutRounding="True" VerticalAlignment="Center">
+                <Path x:Name="grip" Data="M 0,0 A 180,180 180 1 1 1,1 Z" Fill="Transparent" Stretch="Fill"
+                  Stroke="{StaticResource CustomSliderForegroundBrush}" StrokeThickness="2.5" UseLayoutRounding="True" VerticalAlignment="Center"
+                  Margin="-1,-1" />
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsDragging" Value="true">
+                    <Setter Property="Fill" TargetName="grip" Value="{StaticResource CustomSliderForegroundBrush}"/>
+                    <Setter Property="Stroke" TargetName="grip" Value="{StaticResource CustomSliderForegroundBrush}"/>
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Visibility" TargetName="grip" Value="Hidden" />
+                </Trigger>
+                <Trigger Property="IsKeyboardFocused" Value="true">
+                    <Setter Property="Fill" TargetName="grip" Value="{StaticResource CustomSliderForegroundBrush}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        <ControlTemplate x:Key="PositionSliderTemplate" TargetType="{x:Type Slider}">
+            <Border x:Name="border" Background="Transparent" SnapsToDevicePixels="True">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="{TemplateBinding MinHeight}"/>
+                    </Grid.RowDefinitions>
+                    <DockPanel LastChildFill="True">
+                        <Border ClipToBounds="True" x:Name="PART_SelectionRange" Height="3" Visibility="Visible">
+                            <Rectangle RadiusX="1" RadiusY="1" Margin="10,0,-10,0" Fill="{StaticResource CustomSliderForegroundBrush}" />
+                        </Border>
+                        <Border ClipToBounds="True" Height="3" Visibility="Visible">
+                            <Rectangle RadiusX="1" RadiusY="1" Margin="20,0,10,0" Fill="{StaticResource CustomSliderBackgroundBrush}" />
+                        </Border>
+                    </DockPanel>
+                    <Track x:Name="PART_Track">
+                        <Track.Thumb>
+                            <Thumb x:Name="Thumb" Focusable="False" Width="{TemplateBinding MinHeight}" Height="{TemplateBinding MinHeight}" 
+                               OverridesDefaultStyle="True" Template="{StaticResource PositionSliderThumbTemplate}" VerticalAlignment="Center"/>
+                        </Track.Thumb>
+                    </Track>
+                </Grid>
+            </Border>
+        </ControlTemplate>
+        <Style x:Key="PositionSliderStyle" TargetType="{x:Type Slider}">
+            <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="MinHeight" Value="20" />
+            <Setter Property="MaxHeight" Value="20" />
+            <Setter Property="Height" Value="20" />
+            <Setter Property="Minimum" Value="0" />
+            <Setter Property="AutoToolTipPlacement" Value="None" />
+            <Setter Property="IsMoveToPointEnabled" Value="True" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="SelectionStart" Value="0" />
+            <Setter Property="SelectionEnd" Value="{Binding Path=Value, RelativeSource={RelativeSource Self}}" />
+            <Setter Property="Template" Value="{StaticResource PositionSliderTemplate}"/>
+        </Style>
+    </UserControl.Resources>
+    <Grid Name="Controls" Visibility="Visible" Height="250" Background="{x:Null}">
+        <!--上白下黑渐变背景-->
+        <Canvas IsHitTestVisible="False" Background="{DynamicResource ShadedBackgroundBrush}" />
+
+        <Grid VerticalAlignment="Bottom">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"></RowDefinition>
+                <RowDefinition Height="40"></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Slider Name="PositionSlider" Style="{DynamicResource PositionSliderStyle}" Grid.Row="0" Margin="10,0" Cursor="Hand"/>
+
+            <DockPanel Name="ProgressPanel" Grid.Row="1" LastChildFill="True" Margin="20,0">
+                <TextBlock Width="100" Foreground="White" Text="00:00:00" VerticalAlignment="Center" DockPanel.Dock="Left"  />
+                <TextBlock Width="100" Foreground="White" Text="10:00:00" TextAlignment="Right" VerticalAlignment="Center" DockPanel.Dock="Right"  />
+                <Grid Width="500">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="100" />
+                    </Grid.ColumnDefinitions>
+                </Grid>
+            </DockPanel>
+        </Grid>
+    </Grid>
+</UserControl>
