@@ -8,7 +8,10 @@
              xmlns:ffme="clr-namespace:Unosquare.FFME;assembly=ffme.win"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:behaviors="clr-namespace:Dopamine.Behaviors"
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             xmlns:prismMvvm="clr-namespace:Prism.Mvvm;assembly=Prism.Wpf"
+             xmlns:prism="http://www.codeplex.com/prism"
+             prismMvvm:ViewModelLocator.AutoWireViewModel="True">
 
     <UserControl.Resources>
         <Storyboard x:Key="ShowControlOpacity" Storyboard.TargetProperty="(UIElement.Opacity)">
@@ -30,10 +33,10 @@
         <Grid Name="Player">
             <i:Interaction.Behaviors>
                 <behaviors:MouseIdleBehavior
-            IdleThresholdMs="3000"
-            HideAnimation="{StaticResource HideControlOpacity}"
-            ShowAnimation="{StaticResource ShowControlOpacity}"
-            TargetElement="{Binding ElementName=ControllerPanel}"/>
+                    IdleThresholdMs="3000"
+                    HideAnimation="{StaticResource HideControlOpacity}"
+                    ShowAnimation="{StaticResource ShowControlOpacity}"
+                    TargetElement="{Binding ElementName=ControllerPanel}"/>
             </i:Interaction.Behaviors>
             <ffme:MediaElement x:Name="Media" Width="400" Height="400" Background="red"
                        LoadedBehavior="Manual"
@@ -43,7 +46,7 @@
             <DockPanel x:Name="LayoutPanel" LastChildFill="False">
                 <controls:ControllerPanelControl
                 x:Name="ControllerPanel"
-                DockPanel.Dock="Bottom" />
+                DockPanel.Dock="Bottom"/>
 
                 <controls:PropertiesPanelControl 
                 x:Name="PropertiesPanel"

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,7 @@ namespace Dopamine.Controls
         public ControllerPanelControl()
         {
             InitializeComponent();
+            Loaded += (s, e) => Debug.WriteLine($"TheDataContext: {DataContext?.GetType().Name ?? "null"}");
         }
     }
 }

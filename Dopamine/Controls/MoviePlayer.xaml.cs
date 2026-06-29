@@ -21,6 +21,9 @@ using ImageFormat = System.Drawing.Imaging.ImageFormat;
 using Dopamine.Views.FullPlayer.Video;
 using Unosquare.FFME;
 using Microsoft.Xaml.Behaviors;
+using Dopamine.ViewModels.Control;
+using DryIoc;
+using System.Diagnostics;
 
 namespace Dopamine.Controls
 {
@@ -44,12 +47,18 @@ namespace Dopamine.Controls
             Media.MediaFailed += Media_MediaFailed;
             Media.MediaOpened += Media_MediaOpened;
 
+
+            Loaded += OnLoaded;
             InitializeInteraction();
         }
 
+        private void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            (DataContext as MoviePlayerViewModel)?.SetMediaElement(Media);
+            Debug.WriteLine($"MoviePlayer DataContext: {DataContext?.GetType().Name ?? "null"}");
+        }
         #region Window Control and Input Event Handlers
 
-       
         #endregion
 
         private void InitializeInteraction()

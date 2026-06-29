@@ -4,6 +4,7 @@ using Digimezzo.Foundation.Core.Logging;
 using Digimezzo.Foundation.Core.Settings;
 using Digimezzo.Foundation.Core.Utils;
 using Digimezzo.Foundation.WPF.Controls;
+using Dopamine.Controls;
 using Dopamine.Core.Base;
 using Dopamine.Core.Helpers;
 using Dopamine.Core.IO;
@@ -39,6 +40,7 @@ using Dopamine.Services.Update;
 using Dopamine.Services.Win32Input;
 using Dopamine.Services.WindowsIntegration;
 using Dopamine.Utils;
+using Dopamine.ViewModels.Control;
 using Dopamine.Views;
 using Dopamine.Views.Common;
 using Dopamine.Views.FullPlayer;
@@ -50,6 +52,7 @@ using Dopamine.Views.MiniPlayer;
 using Dopamine.Views.NowPlaying;
 using Prism.DryIoc;
 using Prism.Ioc;
+using Prism.Mvvm;
 using Prism.Regions;
 using System;
 using System.ComponentModel;
@@ -374,6 +377,8 @@ namespace Dopamine
 
             void RegisterViewModels()
             {
+                // Prism 的默认约定是：View 在 Dopamine.Views 命名空间, ViewModel 在 Dopamine.ViewModels 命名空间
+                ViewModelLocationProvider.Register<MoviePlayer, MoviePlayerViewModel>();
             }
         }
 

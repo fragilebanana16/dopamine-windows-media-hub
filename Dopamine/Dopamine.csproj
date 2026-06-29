@@ -43,6 +43,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>0</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -179,6 +180,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Behaviors\MouseIdleBehavior.cs" />
+    <Compile Include="Commands\PlayControlCommand.cs" />
     <Compile Include="Controls\AccentTextBox.cs" />
     <Compile Include="Controls\CombiLabel.cs" />
     <Compile Include="Controls\ControllerPanelControl.xaml.cs">
@@ -251,10 +253,12 @@
     <Compile Include="SharedAssemblyInfo.cs" />
     <Compile Include="Controls\SpectrumAnalyzer.cs" />
     <Compile Include="Utils\BindingProxy.cs" />
+    <Compile Include="Utils\FileInputStream.cs" />
     <Compile Include="Utils\OpenFileUtils.cs" />
     <Compile Include="Utils\SaveFileUtils.cs" />
     <Compile Include="Utils\SlidingContentControlRegionAdapter.cs" />
     <Compile Include="Utils\UriUtils.cs" />
+    <Compile Include="Utils\WindowStatus.cs" />
     <Compile Include="ViewModels\ArtistInfoViewModel.cs" />
     <Compile Include="ViewModels\Common\AppearanceLanguageViewModel.cs" />
     <Compile Include="ViewModels\Common\AppearanceThemeViewModel.cs" />
@@ -296,6 +300,7 @@
     <Compile Include="ViewModels\Common\ShuffleAllControlViewModel.cs" />
     <Compile Include="ViewModels\Common\SpectrumAnalyzerControlViewModel.cs" />
     <Compile Include="ViewModels\Common\UpdateStatusViewModel.cs" />
+    <Compile Include="ViewModels\Control\MoviePlayerViewModel.cs" />
     <Compile Include="ViewModels\CoverArtViewModel.cs" />
     <Compile Include="ViewModels\FullPlayer\Collection\CollectionAlbumsViewModel.cs" />
     <Compile Include="ViewModels\FullPlayer\Collection\CollectionArtistsViewModel.cs" />
