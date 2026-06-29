@@ -12,6 +12,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Threading;
+using ImageFormat = System.Drawing.Imaging.ImageFormat;
+using Dopamine.Views.FullPlayer.Video;
+using Unosquare.FFME;
+using Microsoft.Xaml.Behaviors;
 
 namespace Dopamine.Controls
 {
@@ -20,11 +29,32 @@ namespace Dopamine.Controls
     /// </summary>
     public partial class MoviePlayer : UserControl
     {
+        private Storyboard HideControllerAnimation => FindResource("HideControlOpacity") as Storyboard;
+
+        private Storyboard ShowControllerAnimation => FindResource("ShowControlOpacity") as Storyboard;
+
+        private DateTime LastMouseMoveTime;
+        private Point LastMousePosition;
+        private DispatcherTimer MouseMoveTimer;
+        private bool IsControllerHideCompleted;
+
         public MoviePlayer()
         {
             InitializeComponent();
             Media.MediaFailed += Media_MediaFailed;
             Media.MediaOpened += Media_MediaOpened;
+
+            InitializeInteraction();
+        }
+
+        #region Window Control and Input Event Handlers
+
+       
+        #endregion
+
+        private void InitializeInteraction()
+        {
+ 
         }
 
         private void Media_MediaFailed(object sender, Unosquare.FFME.Common.MediaFailedEventArgs e)

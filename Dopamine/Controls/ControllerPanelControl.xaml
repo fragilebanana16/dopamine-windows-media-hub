@@ -491,7 +491,7 @@
 
     </UserControl.Resources>
 
-    <Grid Name="Controls" Visibility="Visible" Height="250" Background="{x:Null}">
+    <Grid Name="Controls" Visibility="Visible" Height="220" Background="{x:Null}">
 
         <!-- Gradient overlay background -->
         <Canvas IsHitTestVisible="False" Background="{DynamicResource ShadedBackgroundBrush}" />

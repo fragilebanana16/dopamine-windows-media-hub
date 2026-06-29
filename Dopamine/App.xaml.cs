@@ -52,6 +52,7 @@ using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Regions;
 using System;
+using System.ComponentModel;
 using System.Linq;
 using System.ServiceModel;
 using System.Threading;
@@ -66,6 +67,11 @@ namespace Dopamine
     {
         private Mutex instanceMutex = null;
         private DateTime lastUnhandledExceptionLoggedTime = DateTime.MinValue;
+        /// <summary>
+        /// Determines if the Application is in design mode.
+        /// </summary>
+        public static bool IsInDesignMode => !(Current is App) ||
+            (bool)DesignerProperties.IsInDesignModeProperty.GetMetadata(typeof(DependencyObject)).DefaultValue;
 
         protected override void OnStartup(StartupEventArgs e)
         {

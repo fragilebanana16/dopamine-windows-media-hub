@@ -6,15 +6,35 @@
              xmlns:controls="clr-namespace:Dopamine.Controls"
              mc:Ignorable="d" 
              xmlns:ffme="clr-namespace:Unosquare.FFME;assembly=ffme.win"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:behaviors="clr-namespace:Dopamine.Behaviors"
              d:DesignHeight="450" d:DesignWidth="800">
 
-    
+    <UserControl.Resources>
+        <Storyboard x:Key="ShowControlOpacity" Storyboard.TargetProperty="(UIElement.Opacity)">
+            <DoubleAnimation To="1" Duration="0:0:0.100" FillBehavior="HoldEnd" />
+        </Storyboard>
+        <Storyboard x:Key="HideControlOpacity" Storyboard.TargetProperty="(UIElement.Opacity)">
+            <DoubleAnimation To="0" Duration="0:0:0.300" FillBehavior="HoldEnd" />
+        </Storyboard>
+        <Storyboard x:Key="ShowNotification" Storyboard.TargetProperty="(UIElement.Opacity)">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" Duration="0:0:0.25" To="1.0" />
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" Duration="0:0:2" From="1.0" To="0.0" BeginTime="0:0:2" />
+        </Storyboard>
+    </UserControl.Resources>
     <Grid MouseLeftButtonDown ="Window_MouseDoubleClick" >
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="60"/>
         </Grid.RowDefinitions>
         <Grid Name="Player">
+            <i:Interaction.Behaviors>
+                <behaviors:MouseIdleBehavior
+            IdleThresholdMs="3000"
+            HideAnimation="{StaticResource HideControlOpacity}"
+            ShowAnimation="{StaticResource ShowControlOpacity}"
+            TargetElement="{Binding ElementName=ControllerPanel}"/>
+            </i:Interaction.Behaviors>
             <ffme:MediaElement x:Name="Media" Width="400" Height="400" Background="red"
                        LoadedBehavior="Manual"
                        UnloadedBehavior="Manual"
@@ -24,6 +44,11 @@
                 <controls:ControllerPanelControl
                 x:Name="ControllerPanel"
                 DockPanel.Dock="Bottom" />
+
+                <controls:PropertiesPanelControl 
+                x:Name="PropertiesPanel"
+                DockPanel.Dock="Right" 
+                Visibility="Visible"/>
             </DockPanel>
         </Grid>
         
