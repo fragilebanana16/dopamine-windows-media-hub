@@ -54,7 +54,13 @@ namespace Dopamine.Controls
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
-            (DataContext as MoviePlayerViewModel)?.SetMediaElement(Media);
+            MoviePlayerViewModel mpVm = (DataContext as MoviePlayerViewModel);
+            if(mpVm != null)
+            {
+                mpVm.SetMediaElement(Media);
+                mpVm.OnApplicationLoaded();
+            }
+
             Debug.WriteLine($"MoviePlayer DataContext: {DataContext?.GetType().Name ?? "null"}");
         }
         #region Window Control and Input Event Handlers

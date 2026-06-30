@@ -255,6 +255,7 @@
     <Compile Include="Utils\BindingProxy.cs" />
     <Compile Include="Utils\FileInputStream.cs" />
     <Compile Include="Utils\OpenFileUtils.cs" />
+    <Compile Include="Utils\ReactiveExtensions.cs" />
     <Compile Include="Utils\SaveFileUtils.cs" />
     <Compile Include="Utils\SlidingContentControlRegionAdapter.cs" />
     <Compile Include="Utils\UriUtils.cs" />
@@ -300,6 +301,8 @@
     <Compile Include="ViewModels\Common\ShuffleAllControlViewModel.cs" />
     <Compile Include="ViewModels\Common\SpectrumAnalyzerControlViewModel.cs" />
     <Compile Include="ViewModels\Common\UpdateStatusViewModel.cs" />
+    <Compile Include="ViewModels\Control\AttachedViewModel.cs" />
+    <Compile Include="ViewModels\Control\ControllerViewModel.cs" />
     <Compile Include="ViewModels\Control\MoviePlayerViewModel.cs" />
     <Compile Include="ViewModels\CoverArtViewModel.cs" />
     <Compile Include="ViewModels\FullPlayer\Collection\CollectionAlbumsViewModel.cs" />

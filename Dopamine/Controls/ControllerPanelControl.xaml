@@ -660,20 +660,20 @@
                 <DockPanel Name="CenterControls" HorizontalAlignment="Center"
                            Grid.Column="1" VerticalAlignment="Center" LastChildFill="False">
 
-                    <Button Style="{StaticResource ModernButtonStyle}"  Margin="0,0,10,0" Command="{Binding Commands.PauseCommand}">
+                    <Button Visibility="{Binding Controller.PauseButtonVisibility}" Style="{StaticResource ModernButtonStyle}"  Margin="0,0,10,0" Command="{Binding Commands.PauseCommand}">
                         <Path Stretch="Uniform"
                               Data="{StaticResource PauseIcon}"
                               Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
                     </Button>
-
+                    <TextBlock Text="{Binding MediaElement.IsPlaying}" Foreground="Wheat"></TextBlock>
                     <!-- Play button — gradient + glow -->
-                    <Button Style="{StaticResource PlayButtonStyle}"  Margin="0,0,10,0" Command="{Binding Commands.PlayCommand}">
+                    <Button Visibility="{Binding Controller.PlayButtonVisibility}" Style="{StaticResource PlayButtonStyle}"  Margin="0,0,10,0" Command="{Binding Commands.PlayCommand}">
                         <Path Stretch="Uniform" Margin="1,0,0,0"
                               Data="{StaticResource PlayIcon}"
                               Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
                     </Button>
 
-                    <Button Style="{StaticResource ModernButtonStyle}"  Margin="0,0,10,0" Command="{Binding Commands.StopCommand}">
+                    <Button Visibility="{Binding Controller.StopButtonVisibility}" Style="{StaticResource ModernButtonStyle}"  Margin="0,0,10,0" Command="{Binding Commands.StopCommand}">
                         <Path Stretch="Uniform"
                               Data="{StaticResource StopIcon}"
                               Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
