@@ -5,9 +5,13 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:Dopamine.Controls"
              mc:Ignorable="d"
+             xmlns:converters="clr-namespace:Dopamine.Converters"
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-
+        <converters:ClosedCaptionsChannelConverter x:Key="ClosedCaptionsChannelConverter" />
+        <converters:PercentageFormatter x:Key="PercentageFormatter" />
+        <converters:TimeSpanToSecondsConverter x:Key="TimeSpanToSecondsConverter" />
+        
         <!-- ══════════════════════════════════════
              BACKGROUND & COLOR TOKENS
         ══════════════════════════════════════ -->
@@ -247,15 +251,24 @@
         </ControlTemplate>
 
         <Style x:Key="CustomSliderStyle" TargetType="{x:Type Slider}">
-            <Setter Property="MinHeight"            Value="20"/>
-            <Setter Property="Height"               Value="20"/>
-            <Setter Property="Background"           Value="Transparent"/>
-            <Setter Property="IsMoveToPointEnabled" Value="True"/>
-            <Setter Property="SelectionStart"       Value="0"/>
-            <Setter Property="SelectionEnd"         Value="{Binding Path=Value, RelativeSource={RelativeSource Self}}"/>
-            <Setter Property="Template"             Value="{StaticResource CustomSliderTemplate}"/>
+            <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="MinHeight" Value="26" />
+            <Setter Property="MaxHeight" Value="26" />
+            <Setter Property="Height" Value="26" />
+            <Setter Property="Minimum" Value="0" />
+            <Setter Property="IsSnapToTickEnabled" Value="True" />
+            <Setter Property="SmallChange" Value="0.01" />
+            <Setter Property="LargeChange" Value="0.01" />
+            <Setter Property="TickFrequency" Value="0.01" />
+            <Setter Property="AutoToolTipPlacement" Value="None" />
+            <Setter Property="IsMoveToPointEnabled" Value="True" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="SelectionStart" Value="{Binding Path=Minimum, RelativeSource={RelativeSource Self}}" />
+            <Setter Property="SelectionEnd" Value="{Binding Path=Value, RelativeSource={RelativeSource Self}}" />
+            <Setter Property="Template" Value="{StaticResource CustomSliderTemplate}"/>
         </Style>
-
         <!-- ══════════════════════════════════════
              MODERN BUTTON STYLE
              Rounded, subtle hover fill, scale on press.
@@ -504,9 +517,16 @@
             </Grid.RowDefinitions>
 
             <!-- ── Row 0: Position Slider ── -->
-            <Slider Name="PositionSlider"
-                    Style="{DynamicResource PositionSliderStyle}"
-                    Grid.Row="0" Margin="12,0" Cursor="Hand"/>
+            <Slider Name="PositionSlider" Grid.Row="0" Margin="10,0" Cursor="Hand"
+                Style="{DynamicResource PositionSliderStyle}"
+                Visibility="{Binding Controller.SeekBarVisibility}"
+                IsEnabled="{Binding MediaElement.IsOpen}"
+                IsSnapToTickEnabled="False"
+                SmallChange="{Binding MediaElement.PositionStep, Converter={StaticResource TimeSpanToSecondsConverter}}"
+                LargeChange="{Binding MediaElement.PositionStep, Converter={StaticResource TimeSpanToSecondsConverter}}"
+                Minimum="{Binding MediaElement.PlaybackStartTime, Converter={StaticResource TimeSpanToSecondsConverter}}"
+                Maximum="{Binding MediaElement.PlaybackEndTime, Converter={StaticResource TimeSpanToSecondsConverter}}" 
+                Value="{Binding MediaElement.Position, Converter={StaticResource TimeSpanToSecondsConverter}}" />
 
             <!-- ── Row 1: Timecodes + buffering ── -->
             <DockPanel Name="ProgressPanel" Grid.Row="1"
@@ -555,7 +575,7 @@
                 <DockPanel Name="LeftControls" HorizontalAlignment="Left"
                            Grid.Column="0" VerticalAlignment="Center" LastChildFill="False">
 
-                    <ToggleButton IsChecked="True" ToolTip="Enable Vertical Sync" Margin="0,0,6,0"
+                    <ToggleButton Visibility="{Binding Controller.CloseButtonVisibility}" IsChecked="{Binding MediaElement.VerticalSyncEnabled, Mode=TwoWay}" ToolTip="Enable Vertical Sync" Margin="0,0,6,0"
                                   Style="{StaticResource ModernToggleButtonStyle}">
                         <Path Stretch="Uniform"
                               Data="{StaticResource VerticalSyncIcon}"
@@ -564,7 +584,7 @@
                               StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
                     </ToggleButton>
 
-                    <ToggleButton IsChecked="True" ToolTip="Enable Seek Scrubbing" Margin="0,0,6,0"
+                    <ToggleButton Visibility="{Binding Controller.SeekBarVisibility}"  IsChecked="{Binding MediaElement.ScrubbingEnabled, Mode=TwoWay}" ToolTip="Enable Seek Scrubbing" Margin="0,0,6,0"
                                   Style="{StaticResource ModernToggleButtonStyle}">
                         <Path Stretch="Uniform"
                               Data="{StaticResource ScrubbingIcon}"
@@ -573,7 +593,7 @@
                               StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
                     </ToggleButton>
 
-                    <ToggleButton Name="SoundMenuButton" IsChecked="True" Margin="0,0,6,0"
+                    <ToggleButton Name="SoundMenuButton"  Visibility="{Binding Controller.IsMediaOpenVisibility}" Margin="0,0,6,0"
                                   Style="{StaticResource ModernToggleButtonStyle}">
                         <Path Stretch="Uniform"
                               Data="{StaticResource AudioMenuIcon}"
@@ -612,15 +632,15 @@
                                         <Setter Property="FontSize"          Value="11"/>
                                     </Style>
                                 </Grid.Resources>
-
+                                <!--Volume Slider -->
                                 <TextBlock Grid.Row="0" Grid.Column="0">Volume</TextBlock>
                                 <Slider   Grid.Row="0" Grid.Column="1"
                                           IsEnabled="{Binding Controller.IsAudioControlEnabled}"
                                           Style="{DynamicResource CustomSliderStyle}"
                                           Minimum="0.0" Maximum="1.0"
                                           Value="{Binding MediaElement.Volume}"/>
-                                <TextBlock Grid.Row="0" Grid.Column="2" TextAlignment="Right"/>
-
+                                <TextBlock Grid.Row="0" Grid.Column="2" TextAlignment="Right" Text="{Binding MediaElement.Volume, Mode=OneWay, Converter={StaticResource PercentageFormatter}}"/>
+                                <!--Balance Slider -->
                                 <TextBlock Grid.Row="1" Grid.Column="0">Balance</TextBlock>
                                 <Slider   Grid.Row="1" Grid.Column="1"
                                           IsEnabled="{Binding Controller.IsAudioControlEnabled}"
@@ -628,7 +648,7 @@
                                           Minimum="-1.0" Maximum="1.0"
                                           Value="{Binding MediaElement.Balance}"/>
                                 <TextBlock Grid.Row="1" Grid.Column="2" TextAlignment="Right"/>
-
+                                <!-- Speed Ratio Slider -->
                                 <TextBlock Grid.Row="2" Grid.Column="0">Speed</TextBlock>
                                 <Slider   Grid.Row="2" Grid.Column="1"
                                           IsEnabled="{Binding Controller.IsSpeedRatioEnabled}"
@@ -640,7 +660,7 @@
                         </Border>
                     </Popup>
 
-                    <ToggleButton Name="MuteUnmuteButton"
+                    <ToggleButton Visibility="{Binding Controller.AudioControlVisibility}" Name="MuteUnmuteButton"
                                   Style="{StaticResource ModernToggleButtonStyle}">
                         <Path Stretch="Uniform"
                               Data="{StaticResource UnmuteIcon}"
@@ -649,9 +669,9 @@
                               StrokeLineJoin="Round" StrokeStartLineCap="Round" StrokeEndLineCap="Round"/>
                     </ToggleButton>
 
-                    <ToggleButton Name="ClosedCaptionsButton"
-                                  Style="{StaticResource ModernToggleButtonStyle}">
-                        <TextBlock Text="CC" FontSize="10" FontWeight="SemiBold"
+                    <ToggleButton Visibility="{Binding Controller.ClosedCaptionsVisibility}" Name="ClosedCaptionsButton"
+                                  Style="{StaticResource ModernToggleButtonStyle}" IsChecked="{Binding MediaElement.ClosedCaptionsChannel, Converter={StaticResource ClosedCaptionsChannelConverter}, Mode=TwoWay}">
+                        <TextBlock Text="{Binding MediaElement.ClosedCaptionsChannel}" FontSize="10" FontWeight="SemiBold"
                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ToggleButton}}"/>
                     </ToggleButton>
                 </DockPanel>
@@ -660,14 +680,13 @@
                 <DockPanel Name="CenterControls" HorizontalAlignment="Center"
                            Grid.Column="1" VerticalAlignment="Center" LastChildFill="False">
 
-                    <Button Visibility="{Binding Controller.PauseButtonVisibility}" Style="{StaticResource ModernButtonStyle}"  Margin="0,0,10,0" Command="{Binding Commands.PauseCommand}">
+                    <Button Visibility="{Binding Controller.PauseButtonVisibility}" Style="{StaticResource ModernButtonStyle}"  Margin="0,0,10,0" Command="{Binding Commands.PauseCommand}" Width="36" Height="36">
                         <Path Stretch="Uniform"
                               Data="{StaticResource PauseIcon}"
                               Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>
                     </Button>
-                    <TextBlock Text="{Binding MediaElement.IsPlaying}" Foreground="Wheat"></TextBlock>
                     <!-- Play button — gradient + glow -->
-                    <Button Visibility="{Binding Controller.PlayButtonVisibility}" Style="{StaticResource PlayButtonStyle}"  Margin="0,0,10,0" Command="{Binding Commands.PlayCommand}">
+                    <Button Visibility="{Binding Controller.PlayButtonVisibility}" Style="{StaticResource PlayButtonStyle}"  Margin="0,0,10,0" Command="{Binding Commands.PlayCommand}" Width="36" Height="36">
                         <Path Stretch="Uniform" Margin="1,0,0,0"
                               Data="{StaticResource PlayIcon}"
                               Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/>

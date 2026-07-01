@@ -25,7 +25,7 @@
             <DoubleAnimation Storyboard.TargetProperty="Opacity" Duration="0:0:2" From="1.0" To="0.0" BeginTime="0:0:2" />
         </Storyboard>
     </UserControl.Resources>
-    <Grid MouseLeftButtonDown ="Window_MouseDoubleClick" >
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="60"/>

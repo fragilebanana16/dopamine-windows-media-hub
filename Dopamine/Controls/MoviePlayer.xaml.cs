@@ -47,21 +47,35 @@ namespace Dopamine.Controls
             Media.MediaFailed += Media_MediaFailed;
             Media.MediaOpened += Media_MediaOpened;
 
-
             Loaded += OnLoaded;
+            MoviePlayerViewModel mpVm = (DataContext as MoviePlayerViewModel);
+            if (mpVm != null)
+            {
+                mpVm.SetMediaElement(Media);
+            }
+
             InitializeInteraction();
         }
 
-        private void OnLoaded(object sender, RoutedEventArgs e)
+        private async void OnLoaded(object sender, RoutedEventArgs e)
         {
             MoviePlayerViewModel mpVm = (DataContext as MoviePlayerViewModel);
             if(mpVm != null)
             {
-                mpVm.SetMediaElement(Media);
                 mpVm.OnApplicationLoaded();
             }
 
             Debug.WriteLine($"MoviePlayer DataContext: {DataContext?.GetType().Name ?? "null"}");
+
+            try
+            {
+                string filePath = "G:/test.mp4";
+                await Media.Open(new Uri(filePath));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("播放失败: " + ex.Message);
+            }
         }
         #region Window Control and Input Event Handlers
 
