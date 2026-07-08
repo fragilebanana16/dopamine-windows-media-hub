@@ -42,6 +42,8 @@
                             <Separator/>
                             <MenuItem Header="{DynamicResource Language_Settings}" Command="{Binding SetSelectedFullPlayerPageCommand}" CommandParameter="1"/>
                             <MenuItem Header="{DynamicResource Language_Information}" Command="{Binding SetSelectedFullPlayerPageCommand}" CommandParameter="2"/>
+                            <Separator/>
+                            <MenuItem Header="{DynamicResource Language_Memo}" Command="{Binding ManageMemoCommand}" />
                         </ContextMenu>
                     </controls:DropDownButton.Menu>
                 </controls:DropDownButton>

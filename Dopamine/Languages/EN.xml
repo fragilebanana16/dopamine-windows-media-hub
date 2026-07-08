@@ -472,4 +472,5 @@
   <Text Key="Confirm_Clear_Blacklist">Are you sure you want to clear the blacklist?</Text>
   <Text Key="Error_Clearing_Blacklist">The blacklist could not be cleared. Please consult the log file for more information.</Text>
   <Text Key="Movie">Movie</Text>
+  <Text Key="Memo">Memo</Text>
 </Language>

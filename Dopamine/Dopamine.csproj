@@ -243,6 +243,7 @@
     <Compile Include="Converters\StringToLowerConverter.cs" />
     <Compile Include="Converters\StringToUpperConverter.cs" />
     <Compile Include="Initializer.cs" />
+    <Compile Include="Models\PasswordItem.cs" />
     <Compile Include="Models\Search.cs" />
     <Compile Include="Services\Notification\LegacyNotificationService.cs" />
     <Compile Include="Services\Notification\NotificationService.cs" />
@@ -325,6 +326,7 @@
     <Compile Include="ViewModels\FullPlayer\Information\InformationHelpViewModel.cs" />
     <Compile Include="ViewModels\FullPlayer\Information\InformationMenuViewModel.cs" />
     <Compile Include="ViewModels\FullPlayer\Information\InformationViewModel.cs" />
+    <Compile Include="ViewModels\FullPlayer\Memo\PrivacyViewModel.cs" />
     <Compile Include="ViewModels\FullPlayer\Settings\SettingsAppearanceViewModel.cs" />
     <Compile Include="ViewModels\FullPlayer\Settings\SettingsBehaviourViewModel.cs" />
     <Compile Include="ViewModels\FullPlayer\Settings\SettingsBlacklistViewModel.cs" />
@@ -538,6 +540,9 @@
     </Compile>
     <Compile Include="Views\FullPlayer\Information\InformationMenu.xaml.cs">
       <DependentUpon>InformationMenu.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\FullPlayer\Memo\Privacy.xaml.cs">
+      <DependentUpon>Privacy.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\FullPlayer\Settings\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
@@ -1449,6 +1454,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\FullPlayer\Information\InformationMenu.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FullPlayer\Memo\Privacy.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

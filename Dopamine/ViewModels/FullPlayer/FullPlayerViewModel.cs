@@ -5,7 +5,9 @@ using Dopamine.Core.Prism;
 using Dopamine.Services.Dialog;
 using Dopamine.Services.Folders;
 using Dopamine.Services.Indexing;
+using Dopamine.ViewModels.FullPlayer.Memo;
 using Dopamine.Views.FullPlayer;
+using Dopamine.Views.FullPlayer.Memo;
 using Prism.Commands;
 using Prism.Ioc;
 using Prism.Mvvm;
@@ -28,7 +30,8 @@ namespace Dopamine.ViewModels.FullPlayer
         public DelegateCommand LoadedCommand { get; set; }
 
         public DelegateCommand ManageCollectionCommand { get; set; }
-
+        public DelegateCommand ManageMemoCommand { get; set; }
+        
         public DelegateCommand<string> SetSelectedFullPlayerPageCommand { get; set; }
 
         public DelegateCommand BackButtonCommand { get; set; }
@@ -56,7 +59,8 @@ namespace Dopamine.ViewModels.FullPlayer
             this.LoadedCommand = new DelegateCommand(() => this.NagivateToSelectedPage(FullPlayerPage.Collection));
             this.SetSelectedFullPlayerPageCommand = new DelegateCommand<string>(pageIndex => this.NagivateToSelectedPage((FullPlayerPage)Int32.Parse(pageIndex)));
             this.BackButtonCommand = new DelegateCommand(() => this.NagivateToSelectedPage(FullPlayerPage.Collection));
-            this.ManageCollectionCommand = new DelegateCommand(() => this.ManageCollectionAsync());
+            this.ManageCollectionCommand = new DelegateCommand(() => this.ManageCollectionAsync()); 
+            this.ManageMemoCommand = new DelegateCommand(() => this.ManageMemoAsync()); 
         }
 
         private void NagivateToSelectedPage(FullPlayerPage page)
@@ -108,6 +112,27 @@ namespace Dopamine.ViewModels.FullPlayer
 
             await this.foldersService.SaveToggledFoldersAsync();
             this.indexingService.RefreshCollectionIfFoldersChangedAsync();
+        }
+
+        private async void ManageMemoAsync()
+        {
+            Privacy view = this.container.Resolve<Privacy>();
+            view.DataContext = this.container.Resolve<PrivacyViewModel>();
+
+            this.dialogService.ShowCustomDialog(
+                0xE8D6,
+                16,
+                ResourceUtils.GetString("Language_Memo"),
+                view,
+                600,
+                500,
+                false,
+                false,
+                false,
+                true,
+                ResourceUtils.GetString("Language_Ok"),
+                ResourceUtils.GetString("Language_Cancel"),
+                null);
         }
     }
 }
