@@ -112,6 +112,9 @@
     <Compile Include="Blacklist\IBlacklistService.cs" />
     <Compile Include="Cache\CacheService.cs" />
     <Compile Include="Cache\ICacheService.cs" />
+    <Compile Include="Dialog\ModernDialog.xaml.cs">
+      <DependentUpon>ModernDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Entities\BlacklistTrackViewModel.cs" />
     <Compile Include="Collection\CollectionService.cs" />
     <Compile Include="Collection\ICollectionService.cs" />
@@ -281,6 +284,10 @@
     <Page Include="Dialog\InputDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Dialog\ModernDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialog\NotificationDialog.xaml">
       <Generator>MSBuild:Compile</Generator>

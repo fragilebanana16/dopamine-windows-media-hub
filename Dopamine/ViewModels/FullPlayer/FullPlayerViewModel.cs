@@ -119,20 +119,21 @@ namespace Dopamine.ViewModels.FullPlayer
             Privacy view = this.container.Resolve<Privacy>();
             view.DataContext = this.container.Resolve<PrivacyViewModel>();
 
-            this.dialogService.ShowCustomDialog(
-                0xE8D6,
-                16,
-                ResourceUtils.GetString("Language_Memo"),
-                view,
-                600,
-                500,
-                false,
-                false,
-                false,
-                false,
-                null,
-                ResourceUtils.GetString("Language_Cancel"),
-                null);
+            this.dialogService.ShowModernCustomDialog(view);
+            //this.dialogService.ShowCustomDialog(
+            //    0xE8D6,
+            //    16,
+            //    ResourceUtils.GetString("Language_Memo"),
+            //    view,
+            //    600,
+            //    500,
+            //    false,
+            //    false,
+            //    false,
+            //    false,
+            //    null,
+            //    ResourceUtils.GetString("Language_Cancel"),
+            //    null);
         }
     }
 }

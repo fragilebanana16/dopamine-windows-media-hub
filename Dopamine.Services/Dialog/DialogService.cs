@@ -105,6 +105,17 @@ namespace Dopamine.Services.Dialog
             return returnValue;
         }
 
+
+        public bool ShowModernCustomDialog(UserControl content)
+        {
+            bool? result = Application.Current.Dispatcher.Invoke(() =>
+            {
+                return ModernDialog.Show("自定义弹框", content);
+            });
+
+            return result ?? false;
+        }
+
         public bool ShowCustomDialog(UserControl icon, string title, UserControl content, int width, int height, bool canResize, bool autoSize, bool showTitle, bool showCancelButton, string okText, string cancelText, Func<Task<bool>> callback)
         {
             bool returnValue = false;
