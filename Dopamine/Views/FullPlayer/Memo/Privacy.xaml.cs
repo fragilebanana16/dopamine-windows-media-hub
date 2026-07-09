@@ -24,5 +24,20 @@ namespace Dopamine.Views.FullPlayer.Memo
         {
             InitializeComponent();
         }
+
+        private void ScrollViewer_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            var scrollViewer = sender as ScrollViewer;
+            if (scrollViewer != null)
+            {
+                // 根据滚轮方向，向左或向右滚动
+                if (e.Delta > 0)
+                    scrollViewer.LineLeft();
+                else
+                    scrollViewer.LineRight();
+
+                e.Handled = true; // 拦截事件，防止外层也跟着滚
+            }
+        }
     }
 }

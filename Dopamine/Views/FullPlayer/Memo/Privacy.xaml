@@ -4,142 +4,303 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Dopamine.Views.FullPlayer.Memo"
+             xmlns:helpers="clr-namespace:Dopamine.Helpers"
+             xmlns:pc="clr-namespace:Dopamine.Controls"
              mc:Ignorable="d" >
-    <Grid>
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#0F0F1E">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="1*"/>
-            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
         <!-- ========================================== -->
         <!--                 左侧列表区                  -->
         <!-- ========================================== -->
-        <Border Grid.Column="0" Background="#121224" BorderBrush="#222240" BorderThickness="0,0,1,0" Padding="15">
+        <Border Grid.Column="0" Background="#15152A" BorderBrush="#242445" BorderThickness="0,0,1,0" Padding="14,16">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <!-- 搜索框 -->
-                    <RowDefinition Height="*"/>
-                    <!-- 列表 -->
                     <RowDefinition Height="Auto"/>
-                    <!-- 按钮 -->
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
-                <!-- 搜索框 -->
-                <TextBox Grid.Row="0" Margin="0,0,0,15" Height="38" 
-                         VerticalContentAlignment="Center" Padding="5,0"
-                         Background="#1A1A30" Foreground="White" BorderBrush="#333366"/>
+                <!-- 左侧列表：绑定到 AccountsView，SelectedItem 双向绑定 -->
+                <Border HorizontalAlignment="Stretch" Background="{DynamicResource Brush_SearchBoxbackground}">
+                    <pc:SearchBox x:Name="SearchBox"
+                  HorizontalAlignment="Stretch" Text="{Binding SearchText,UpdateSourceTrigger=PropertyChanged}" 
+                  Background="{DynamicResource Brush_TextBoxBackgroundInvisible}"  
+                  Foreground="{DynamicResource Brush_PrimaryText}" FontSize="15" />
+                </Border>
 
-                <!-- 账号列表 (这里用硬编码写死两行作为结构演示，你可以换回绑定) -->
-                <ListBox Grid.Row="1" Background="Transparent" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled" HorizontalContentAlignment="Stretch">
-                    <!-- 第一项 -->
-                    <ListBoxItem Margin="0,0,0,10">
-                        <Border Background="#1A1A32" CornerRadius="6" Padding="12">
-                            <StackPanel>
-                                <TextBlock Text="微信 (社交)" FontWeight="Bold" Foreground="White"/>
-                                <TextBlock Text="wang_xiaoming" Foreground="#8888A0" Margin="0,4,0,0" FontSize="13"/>
-                            </StackPanel>
-                        </Border>
-                    </ListBoxItem>
+                <!-- 1. 左右滑动标签层 -->
+                    <ScrollViewer Grid.Row="1" 
+                  HorizontalScrollBarVisibility="Hidden" 
+                  VerticalScrollBarVisibility="Disabled"
+                  PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
+                  Margin="0,0,0,10">
 
-                    <!-- 第二项 -->
-                    <ListBoxItem Margin="0,0,0,10">
-                        <Border Background="#1A1A32" CornerRadius="6" Padding="12">
-                            <StackPanel>
-                                <TextBlock Text="招商银行 (金融)" FontWeight="Bold" Foreground="White"/>
-                                <TextBlock Text="6225 **** **** 8821" Foreground="#8888A0" Margin="0,4,0,0" FontSize="13"/>
-                            </StackPanel>
-                        </Border>
-                    </ListBoxItem>
-                </ListBox>
+                        <ListBox x:Name="TagListBox"
+                 ItemsSource="{Binding Categories}"
+                 SelectedValue="{Binding SelectedCategory}"
+                 BorderThickness="0"
+                 Background="Transparent">
 
-                <!-- 【增】添加记录按钮 -->
-                <Button Grid.Row="2" Content="+ 添加记录" Height="42" Margin="0,15,0,0" 
-                        Background="#5F5FEA" Foreground="White" FontWeight="Bold" BorderThickness="0"/>
+                            <!-- 修改 ItemsPanel，让标签横向排列 -->
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+
+                            <!-- 美化标签样式（去除默认的ListBoxItem难看蓝底） -->
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBoxItem">
+                                                <Border x:Name="TagBorder" 
+                                        Background="#F3F3F3" 
+                                        CornerRadius="15" 
+                                        Padding="14,6" 
+                                        Margin="2,8" 
+                                        Cursor="Hand">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <!-- 鼠标悬停 -->
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="TagBorder" Property="Background" Value="#E5E5E5"/>
+                                                    </Trigger>
+                                                    <!-- 选中状态 -->
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter TargetName="TagBorder" Property="Background" Value="#0078D4"/>
+                                                        <Setter Property="Foreground" Value="White"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
+                    </ScrollViewer>
+
+                    <ListBox Grid.Row="2" ItemsSource="{Binding AccountsView}"
+         SelectedItem="{Binding SelectedAccount, Mode=TwoWay}"
+         Background="Transparent" BorderThickness="0">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <Border x:Name="ItemBg" Background="Transparent" CornerRadius="6" Padding="10,8" Margin="0,0,0,6" Cursor="Hand">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Border x:Name="Bar" Grid.Column="0" Width="3" CornerRadius="2" Background="Transparent" Margin="0,0,10,0"/>
+                                                    <ContentPresenter Grid.Column="1" VerticalAlignment="Center"/>
+                                                </Grid>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <!-- 选中态：背景高亮 + 左侧色条显示 -->
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter TargetName="ItemBg" Property="Background" Value="#1E1E42"/>
+                                                    <Setter TargetName="Bar" Property="Background" Value="#7C7CFF"/>
+                                                </Trigger>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="ItemBg" Property="Background" Value="#1A1A34"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Title}" FontWeight="SemiBold" Foreground="White" FontSize="13"/>
+                                        <!-- 未保存新条目角标 -->
+                                        <TextBlock Text=" ●" Foreground="#FFC107" FontSize="10"
+                               Visibility="{Binding IsNew, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Account}" Foreground="#7A7A9A" FontSize="11" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                
+                <!-- 添加记录按钮 -->
+                <Button Grid.Row="3" Content="+  添加记录" Height="34" Margin="0,10,0,0"
+                    Background="#5F5FEA" Foreground="White" FontWeight="SemiBold" FontSize="12"
+                    BorderThickness="0" Cursor="Hand">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" CornerRadius="7">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
             </Grid>
         </Border>
 
         <!-- ========================================== -->
         <!--                 右侧详情区                  -->
         <!-- ========================================== -->
-        <Border Grid.Column="1" Padding="40,30">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <!-- 顶部标题与操作栏 -->
-                    <RowDefinition Height="*"/>
-                    <!-- 表单字段 -->
-                </Grid.RowDefinitions>
+        <Grid Grid.Column="1" Margin="24,18,24,18">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-                <!-- 1. 顶部操作栏 -->
-                <Grid Grid.Row="0" Margin="0,0,0,30">
-                    <!-- 左侧：标题与网址 -->
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="微信" FontSize="24" FontWeight="Bold" Foreground="White" VerticalAlignment="Center"/>
-                        <TextBlock Text="qq.com" FontSize="14" Foreground="#66668A" Margin="15,0,0,2" VerticalAlignment="Bottom"/>
+            <!-- 顶部标题栏 -->
+            <Grid Grid.Row="0" Margin="0,0,0,18">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Width="34" Height="34" Background="#5F5FEA" CornerRadius="8" Margin="0,0,10,0">
+                        <TextBlock Text="微" Foreground="White" FontWeight="Bold" FontSize="14"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="{Binding SelectedAccount.Title}" FontSize="16" FontWeight="Bold" Foreground="White"/>
+                        <TextBlock Text="{Binding SelectedAccount.Account}"  FontSize="11" Foreground="#5C5C7A"/>
                     </StackPanel>
+                </StackPanel>
 
-                    <!-- 右侧：按钮组（直接全部平铺，方便你后续直接绑定 Prism Command） -->
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Content="编辑" Width="25" Height="32" Margin="4,0" Background="#252545" Foreground="White" BorderThickness="0"/>
-                        <Button Content="删除" Width="25" Height="32" Margin="4,0" Background="#502020" Foreground="#FF6B6B" BorderThickness="0"/>
-                        <Button Content="保存" Width="25" Height="32" Margin="4,0" Background="#1C3A27" Foreground="#6BFF94" BorderThickness="0"/>
-                    </StackPanel>
-                </Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <Border Width="30" Height="30" Background="#1E1E38" CornerRadius="7" Margin="4,0" Cursor="Hand">
+                        <TextBlock Text="✎" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13"/>
+                    </Border>
+                    <Border Width="30" Height="30" Background="#3A1E28" CornerRadius="7" Margin="4,0" Cursor="Hand">
+                        <TextBlock Text="🗑" Foreground="#FF6B6B" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="12"/>
+                    </Border>
+                </StackPanel>
+            </Grid>
 
-                <!-- 2. 表单内容 (用 ScrollViewer 包裹，用 Margin 撑开防止粘连) -->
-                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                    <StackPanel MaxWidth="600" MinWidth="300" HorizontalAlignment="Left">
+            <!-- 表单内容 -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
 
-                        <!-- 账号字段 -->
-                        <TextBlock Text="账号 / 用户名" Foreground="#66668A" Margin="0,0,0,8" FontSize="13"/>
-                        <TextBox Height="40" Margin="0,0,0,24" VerticalContentAlignment="Center" Padding="8,0"
-                                 Background="#16162A" Foreground="White" BorderBrush="#252545"/>
+                    <!-- 账号：正常可编辑 TextBox -->
+                    <TextBlock Text="账号 / 用户名" Foreground="#5C5C7A" Margin="0,0,0,6" FontSize="11"/>
+                    <Border Background="#15152A" CornerRadius="7" Height="36" Margin="0,0,0,16" BorderBrush="#242445" BorderThickness="1">
+                        <TextBox Background="Transparent" BorderThickness="0" Foreground="White" FontSize="13"
+                             VerticalContentAlignment="Center" Padding="10,0" Text="{Binding SelectedAccount.Account}"/>
+                    </Border>
 
-                        <!-- 密码字段 -->
-                        <TextBlock Text="密码" Foreground="#66668A" Margin="0,0,0,8" FontSize="13"/>
-                        <TextBox Height="40" Margin="0,0,0,12" VerticalContentAlignment="Center" Padding="8,0"
-                                 Background="#16162A" Foreground="White" BorderBrush="#252545"/>
+                    <!-- 密码：真正的显示/隐藏切换，用 PasswordBox + TextBox 叠放，
+                     由 ToggleButton.IsChecked 触发 Visibility 互换 -->
+                    <TextBlock Text="密码" Foreground="#5C5C7A" Margin="0,0,0,6" FontSize="11"/>
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
 
-                        <!-- 快捷状态切换按钮组 -->
-                        <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-                            <Button Content="👁️ 隐藏" Padding="12,6" Margin="0,0,8,0" Background="#1C1C38" Foreground="#8A8AFF" BorderThickness="0"/>
-                            <Button Content="💡 提示" Padding="12,6" Margin="0,0,8,0" Background="#1C1C38" Foreground="#8A8AFF" BorderThickness="0"/>
-                            <Button Content="👁️ 完整显示" Padding="12,6" Margin="0,0,8,0" Background="#1C1C38" Foreground="#8A8AFF" BorderThickness="0"/>
-                        </StackPanel>
+                        <Border Grid.Column="0" Background="#15152A" CornerRadius="7" Height="36"
+                            BorderBrush="#242445" BorderThickness="1">
+                            <Grid>
+                                <!-- 密文态：默认可见，勾选后隐藏 -->
+                                <PasswordBox x:Name="PwdBox" 
+                 helpers:PasswordBoxHelper.BindablePassword="{Binding SelectedAccount.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Background="Transparent" BorderThickness="0" Foreground="White" FontSize="13" Padding="10,8">
+                                    <PasswordBox.Style>
+                                        <Style TargetType="PasswordBox">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsChecked, ElementName=ShowPwdToggle}" Value="True">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </PasswordBox.Style>
+                                </PasswordBox>
 
-                        <!-- 密码强度条指示 -->
-                        <Grid Margin="0,0,0,24">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Border Grid.Column="0" Height="4" Background="#00E676" Margin="0,0,4,0" CornerRadius="2"/>
-                            <Border Grid.Column="1" Height="4" Background="#00E676" Margin="4,0,4,0" CornerRadius="2"/>
-                            <Border Grid.Column="2" Height="4" Background="#00E676" Margin="4,0,4,0" CornerRadius="2"/>
-                            <Border Grid.Column="3" Height="4" Background="#00E676" Margin="4,0,12,0" CornerRadius="2"/>
-                            <TextBlock Grid.Column="4" Text="极强" FontSize="12" Foreground="#00E676" VerticalAlignment="Center"/>
-                        </Grid>
-
-                        <!-- 备注字段 -->
-                        <TextBlock Text="备注" Foreground="#66668A" Margin="0,0,0,8" FontSize="13"/>
-                        <TextBox Height="120" Margin="0,0,0,30" TextWrapping="Wrap" AcceptsReturn="True" Padding="8"
-                                 Background="#16162A" Foreground="White" BorderBrush="#252545"/>
-
-                        <!-- 底部元数据线 -->
-                        <Border BorderBrush="#16162A" BorderThickness="0,1,0,0" Padding="0,15,0,0">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="🕒 上次更新时间：" Foreground="#4A4A6B" FontSize="12"/>
-                                <TextBlock Text="2024-11-20 14:23:01" Foreground="#4A4A6B" FontSize="12"/>
-                            </StackPanel>
+                                <!-- 明文态：默认隐藏，勾选后可见 -->
+                                <TextBox x:Name="PwdText" Background="Transparent" BorderThickness="0" Foreground="White"
+         FontSize="13" VerticalContentAlignment="Center" Padding="10,0"
+         Text="{Binding SelectedAccount.Password,
+                   Mode=TwoWay,
+                   UpdateSourceTrigger=PropertyChanged}">
+                                    <TextBox.Style>
+                                        <Style TargetType="TextBox">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsChecked, ElementName=ShowPwdToggle}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBox.Style>
+                                </TextBox>
+                            </Grid>
                         </Border>
 
-                    </StackPanel>
-                </ScrollViewer>
-            </Grid>
-        </Border>
+                        <ToggleButton Grid.Column="1" x:Name="ShowPwdToggle" Width="36" Height="36" Margin="8,0,0,0" Cursor="Hand">
+                            <TextBlock Text="👁" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            <ToggleButton.Template>
+                                <ControlTemplate TargetType="ToggleButton">
+                                    <Border x:Name="Bg" Background="#1E1E38" CornerRadius="7">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter TargetName="Bg" Property="Background" Value="#5F5FEA"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </ToggleButton.Template>
+                        </ToggleButton>
+                    </Grid>
+
+                    <!-- 密码强度条 -->
+                    <Grid Margin="0,0,0,20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Height="3" Background="#00E676" Margin="0,0,3,0" CornerRadius="2"/>
+                        <Border Grid.Column="1" Height="3" Background="#00E676" Margin="3,0,3,0" CornerRadius="2"/>
+                        <Border Grid.Column="2" Height="3" Background="#00E676" Margin="3,0,3,0" CornerRadius="2"/>
+                        <Border Grid.Column="3" Height="3" Background="#00E676" Margin="3,0,10,0" CornerRadius="2"/>
+                        <TextBlock Grid.Column="4" Text="极强" FontSize="11" Foreground="#00E676" VerticalAlignment="Center"/>
+                    </Grid>
+
+                    <!-- 备注：正常可编辑多行 TextBox -->
+                    <TextBlock Text="备注" Foreground="#5C5C7A" Margin="0,0,0,6" FontSize="11"/>
+                    <Border Background="#15152A" CornerRadius="7" Height="70" Margin="0,0,0,16" BorderBrush="#242445" BorderThickness="1">
+                        <TextBox Background="Transparent" BorderThickness="0" Foreground="White" FontSize="13"
+                             TextWrapping="Wrap" AcceptsReturn="True" Padding="10,8"/>
+                    </Border>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="🕒 2024-11-20 更新" Foreground="#4A4A6B" FontSize="11" VerticalAlignment="Center"/>
+                        <Button Grid.Column="1" Content="保存修改" Width="100" Height="32"
+                            Background="#5F5FEA" Foreground="White" FontWeight="SemiBold" FontSize="12"
+                            BorderThickness="0" Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" CornerRadius="7">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </Grid>
+
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </UserControl>

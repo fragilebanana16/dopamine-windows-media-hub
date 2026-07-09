@@ -17,154 +17,305 @@ namespace Dopamine.ViewModels.FullPlayer.Memo
 {
     class PrivacyViewModel : BindableBase
     {
-        private ObservableCollection<PasswordItem> _allItems;
-        public ICollectionView ItemsView { get; }
+        public ObservableCollection<PasswordItem> Accounts { get; } = new ObservableCollection<PasswordItem>();
+        public List<string> Categories { get; set; }
+        private ICollectionView _accountsView;
+        public ICollectionView AccountsView => _accountsView;
 
-        // 当前选中的项（用于详情展示）
-        private PasswordItem _selectedItem;
-        public PasswordItem SelectedItem
+        private PasswordItem _selectedAccount;
+        /// <summary>列表中当前选中的条目（未编辑前的"原始态"引用）</summary>
+        public PasswordItem SelectedAccount
         {
-            get => _selectedItem;
+            get => _selectedAccount;
             set
             {
-                if (SetProperty(ref _selectedItem, value))
+                // 切换选中项前，如果正处于编辑态且未保存，提示或自动放弃编辑
+                if (IsEditing && _selectedAccount != null && !ReferenceEquals(value, _selectedAccount))
                 {
-                    IsEditMode = false;
-                    // 切换选中时，深拷贝一份用于编辑，防止未保存直接修改列表
-                    EditingItem = value != null ? CloneItem(value) : null;
+                    CancelEditInternal();
+                }
+
+                if (SetProperty(ref _selectedAccount, value))
+                {
+                    RaisePropertyChanged(nameof(HasSelection));
+                    LoadDetailFromSelected();
+                    RaiseCommandsCanExecuteChanged();
                 }
             }
         }
 
-        // 当前正在编辑/新增的临时项
-        private PasswordItem _editingItem;
-        public PasswordItem EditingItem { get => _editingItem; set => SetProperty(ref _editingItem, value); }
+        public bool HasSelection => SelectedAccount != null;
 
-        // 搜索文本
-        private string _searchText;
+        // ---------------- 右侧详情表单的可编辑字段（编辑态草稿，与列表原始数据分离） ----------------
+
+        private PasswordItem _draft;
+        /// <summary>正在编辑/查看的草稿对象，UI 绑定到这个对象上的字段</summary>
+        public PasswordItem Draft
+        {
+            get => _draft;
+            set => SetProperty(ref _draft, value);
+        }
+
+        private bool _isEditing;
+        /// <summary>是否处于编辑态：true=表单可写，false=只读展示</summary>
+        public bool IsEditing
+        {
+            get => _isEditing;
+            set
+            {
+                if (SetProperty(ref _isEditing, value))
+                {
+                    RaiseCommandsCanExecuteChanged();
+                }
+            }
+        }
+
+        private bool _showPassword;
+        public bool ShowPassword
+        {
+            get => _showPassword;
+            set => SetProperty(ref _showPassword, value);
+        }
+
+        private string _searchText = "";
         public string SearchText
         {
             get => _searchText;
             set
             {
                 if (SetProperty(ref _searchText, value))
-                    ItemsView.Refresh();
+                {
+                    _accountsView.Refresh();
+                }
             }
         }
 
-        // 控制右侧是“只读/编辑”状态
-        private bool _isEditMode;
-        public bool IsEditMode { get => _isEditMode; set => SetProperty(ref _isEditMode, value); }
+        // ---------------- Commands ----------------
 
-        // 核心交互命令
         public DelegateCommand AddCommand { get; }
         public DelegateCommand EditCommand { get; }
         public DelegateCommand SaveCommand { get; }
+        public DelegateCommand CancelEditCommand { get; }
         public DelegateCommand DeleteCommand { get; }
-        public DelegateCommand CancelCommand { get; }
+        public DelegateCommand ToggleShowPasswordCommand { get; }
 
-        public PrivacyViewModel()
+        private string _selectedCategory;
+        public string SelectedCategory
         {
-            // 1. 初始化模拟后台数据 (查)
-            _allItems = new ObservableCollection<PasswordItem>
-        {
-            new PasswordItem { Id = 1, Title = "微信", Category = "社交", Username = "wang_xiaoming", Password = "password123", Url = "weixin.qq.com", Notes = "主要社交账号，绑定手机 138****8888", LastUpdated = DateTime.Parse("2024-11-20") },
-            new PasswordItem { Id = 2, Title = "招商银行", Category = "金融", Username = "6225 **** **** 8821", Password = "bankpassword", Url = "cmbchina.com", Notes = "工资卡", LastUpdated = DateTime.Parse("2024-10-15") },
-            new PasswordItem { Id = 3, Title = "GitHub", Category = "工作", Username = "wangxm-dev", Password = "gitpassword", Url = "github.com", Notes = "个人开发账号", LastUpdated = DateTime.Parse("2025-01-02") }
-        };
-
-            ItemsView = CollectionViewSource.GetDefaultView(_allItems);
-            ItemsView.Filter = FilterItems;
-
-            // 2. 命令绑定
-            AddCommand = new DelegateCommand(ExecuteAdd);
-            EditCommand = new DelegateCommand(ExecuteEdit, () => SelectedItem != null).ObservesProperty(() => SelectedItem);
-            SaveCommand = new DelegateCommand(ExecuteSave, () => EditingItem != null).ObservesProperty(() => EditingItem);
-            DeleteCommand = new DelegateCommand(ExecuteDelete, () => SelectedItem != null).ObservesProperty(() => SelectedItem);
-            CancelCommand = new DelegateCommand(ExecuteCancel);
-        }
-
-        private bool FilterItems(object obj)
-        {
-            if (string.IsNullOrWhiteSpace(SearchText)) return true;
-            var item = obj as PasswordItem;
-            return item != null && (item.Title.Contains(SearchText) ||
-                                   item.Username.Contains(SearchText));
-        }
-
-        // 【增】点击添加按钮
-        private void ExecuteAdd()
-        {
-            SelectedItem = null;
-            EditingItem = new PasswordItem { Id = 0, Category = "社交", LastUpdated = DateTime.Now };
-            IsEditMode = true;
-        }
-
-        // 【改】进入编辑状态
-        private void ExecuteEdit()
-        {
-            IsEditMode = true;
-        }
-
-        // 【改/增】保存逻辑
-        private void ExecuteSave()
-        {
-            if (EditingItem == null) return;
-
-            EditingItem.LastUpdated = DateTime.Now;
-
-            if (EditingItem.Id == 0) // 新增
+            get => _selectedCategory;
+            set
             {
-                EditingItem.Id = _allItems.Any() ? _allItems.Max(i => i.Id) + 1 : 1;
-                _allItems.Add(EditingItem);
-                SelectedItem = EditingItem;
-            }
-            else // 修改更新
-            {
-                var original = _allItems.FirstOrDefault(i => i.Id == EditingItem.Id);
-                if (original != null)
+                if (SetProperty(ref _selectedCategory, value))
                 {
-                    original.Title = EditingItem.Title;
-                    original.Category = EditingItem.Category;
-                    original.Username = EditingItem.Username;
-                    original.Password = EditingItem.Password;
-                    original.Url = EditingItem.Url;
-                    original.Notes = EditingItem.Notes;
-                    original.LastUpdated = EditingItem.LastUpdated;
+                    OnPropertyChanged(nameof(SelectedCategory));
+                    AccountsView?.Refresh();
                 }
             }
-            IsEditMode = false;
-            ItemsView.Refresh();
+        }
+        public PrivacyViewModel()
+        {
+            // 初始化测试分类
+            Categories = new List<string> { "全部", "社交", "金融", "图书音像", "户外运动", "食品生鲜", "服装鞋帽" };
+            // 模拟数据
+            Accounts.Add(new PasswordItem
+            {
+                Title = "微信",
+                Category = "社交",
+                Account = "wang_xiaoming",
+                Password = "Wx@123456",
+                Url = "qq.com",
+                Remark = "常用账号",
+                UpdatedAt = new DateTime(2024, 11, 20, 14, 23, 1)
+            });
+            Accounts.Add(new PasswordItem
+            {
+                Title = "招商银行",
+                Category = "金融",
+                Account = "6225********8821",
+                Password = "Bank#9527",
+                Url = "cmbchina.com",
+                Remark = "",
+                UpdatedAt = new DateTime(2024, 10, 2, 9, 0, 0)
+            });
+
+            _accountsView = CollectionViewSource.GetDefaultView(Accounts);
+            _accountsView.Filter = FilterAccounts;
+
+            AddCommand = new DelegateCommand(ExecuteAdd);
+            EditCommand = new DelegateCommand(ExecuteEdit, CanEdit);
+            SaveCommand = new DelegateCommand(ExecuteSave, CanSave);
+            CancelEditCommand = new DelegateCommand(ExecuteCancelEdit, CanCancelEdit);
+            DeleteCommand = new DelegateCommand(ExecuteDelete, CanDelete);
+            ToggleShowPasswordCommand = new DelegateCommand(() => ShowPassword = !ShowPassword);
+
+            if (Accounts.Count > 0)
+            {
+                SelectedAccount = Accounts[0];
+            }
         }
 
-        // 【删】删除逻辑
+        private bool FilterAccounts(object obj)
+        {
+            if (obj is PasswordItem item)
+            {
+                // 1. 验证【标签分类】条件 (若为"全部"或为空，则该条件直接通关)
+                bool matchesCategory = string.IsNullOrEmpty(SelectedCategory) ||
+                                       SelectedCategory == "全部" ||
+                                       item.Category == SelectedCategory;
+
+                // 2. 验证【搜索框文字】条件 (若为空，则该条件直接通关)
+                bool matchesSearchText = string.IsNullOrWhiteSpace(SearchText) ||
+                                         (item.Title?.Contains(SearchText) ?? false) ||
+                                         (item.Account?.Contains(SearchText) ?? false);
+
+                // 3. 必须同时满足 标签 且 满足 搜索文字 才能显示
+                return matchesCategory && matchesSearchText;
+            }
+
+            return false;
+        }
+
+        private void LoadDetailFromSelected()
+        {
+            ShowPassword = false;
+            if (SelectedAccount == null)
+            {
+                Draft = null;
+                IsEditing = false;
+                return;
+            }
+
+            // 深拷贝到草稿，避免只读展示阶段直接改到列表数据源
+            Draft = SelectedAccount.Clone();
+
+            // 如果是刚添加的新条目，直接进入编辑态；否则只读展示
+            IsEditing = SelectedAccount.IsNew;
+        }
+
+        // ---------------- 添加 ----------------
+
+        private void ExecuteAdd()
+        {
+            var newItem = new PasswordItem
+            {
+                Title = "新账号",
+                Category = "未分类",
+                UpdatedAt = DateTime.Now,
+                IsNew = true
+            };
+
+            Accounts.Insert(0, newItem);
+            _accountsView.Refresh();
+
+            // 选中新条目 -> 触发 LoadDetailFromSelected -> 因为 IsNew=true 自动进入编辑态
+            SelectedAccount = newItem;
+        }
+
+        // ---------------- 编辑 ----------------
+
+        private bool CanEdit() => HasSelection && !IsEditing;
+
+        private void ExecuteEdit()
+        {
+            if (SelectedAccount == null) return;
+            Draft = SelectedAccount.Clone();
+            IsEditing = true;
+        }
+
+        // ---------------- 保存 ----------------
+
+        private bool CanSave() => IsEditing && Draft != null && !string.IsNullOrWhiteSpace(Draft.Title);
+
+        private void ExecuteSave()
+        {
+            if (SelectedAccount == null || Draft == null) return;
+
+            Draft.UpdatedAt = DateTime.Now;
+            Draft.IsNew = false;
+
+            // 把草稿写回列表中的真实对象，列表项因为属性是 BindableBase 会自动刷新显示
+            SelectedAccount.CopyFrom(Draft);
+
+            IsEditing = false;
+            _accountsView.Refresh();
+            RaiseCommandsCanExecuteChanged();
+        }
+
+        // ---------------- 取消编辑 ----------------
+
+        private bool CanCancelEdit() => IsEditing;
+
+        private void ExecuteCancelEdit() => CancelEditInternal();
+
+        private void CancelEditInternal()
+        {
+            if (SelectedAccount == null) return;
+
+            if (SelectedAccount.IsNew)
+            {
+                // 新建但取消 -> 直接从列表移除这条未保存记录
+                var toRemove = SelectedAccount;
+                int idx = Accounts.IndexOf(toRemove);
+                Accounts.Remove(toRemove);
+
+                IsEditing = false;
+                _selectedAccount = null; // 避免再次触发 CancelEditInternal
+                RaisePropertyChanged(nameof(SelectedAccount));
+
+                if (Accounts.Count > 0)
+                {
+                    SelectedAccount = Accounts[Math.Min(idx, Accounts.Count - 1)];
+                }
+                else
+                {
+                    Draft = null;
+                    RaisePropertyChanged(nameof(HasSelection));
+                }
+            }
+            else
+            {
+                // 已有记录，取消 -> 草稿还原为原始数据，回到只读态
+                Draft = SelectedAccount.Clone();
+                IsEditing = false;
+            }
+
+            RaiseCommandsCanExecuteChanged();
+        }
+
+        // ---------------- 删除 ----------------
+
+        private bool CanDelete() => HasSelection;
+
         private void ExecuteDelete()
         {
-            if (SelectedItem == null) return;
-            _allItems.Remove(SelectedItem);
-            SelectedItem = _allItems.FirstOrDefault();
-        }
+            if (SelectedAccount == null) return;
 
-        // 取消编辑
-        private void ExecuteCancel()
-        {
-            IsEditMode = false;
-            EditingItem = SelectedItem != null ? CloneItem(SelectedItem) : null;
-        }
+            int idx = Accounts.IndexOf(SelectedAccount);
+            Accounts.Remove(SelectedAccount);
 
-        private PasswordItem CloneItem(PasswordItem source)
-        {
-            return new PasswordItem
+            _selectedAccount = null;
+            RaisePropertyChanged(nameof(SelectedAccount));
+
+            if (Accounts.Count > 0)
             {
-                Id = source.Id,
-                Title = source.Title,
-                Category = source.Category,
-                Url = source.Url,
-                Username = source.Username,
-                Password = source.Password,
-                Notes = source.Notes,
-                LastUpdated = source.LastUpdated
-            };
+                SelectedAccount = Accounts[Math.Min(idx, Accounts.Count - 1)];
+            }
+            else
+            {
+                Draft = null;
+                IsEditing = false;
+                RaisePropertyChanged(nameof(HasSelection));
+            }
+
+            _accountsView.Refresh();
+        }
+
+        private void RaiseCommandsCanExecuteChanged()
+        {
+            EditCommand.RaiseCanExecuteChanged();
+            SaveCommand.RaiseCanExecuteChanged();
+            CancelEditCommand.RaiseCanExecuteChanged();
+            DeleteCommand.RaiseCanExecuteChanged();
         }
     }
 }

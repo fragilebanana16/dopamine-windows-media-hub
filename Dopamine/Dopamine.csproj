@@ -242,6 +242,7 @@
     <Compile Include="Converters\StringEmptyToVisibleConverter.cs" />
     <Compile Include="Converters\StringToLowerConverter.cs" />
     <Compile Include="Converters\StringToUpperConverter.cs" />
+    <Compile Include="Helpers\PasswordBoxHelper.cs" />
     <Compile Include="Initializer.cs" />
     <Compile Include="Models\PasswordItem.cs" />
     <Compile Include="Models\Search.cs" />

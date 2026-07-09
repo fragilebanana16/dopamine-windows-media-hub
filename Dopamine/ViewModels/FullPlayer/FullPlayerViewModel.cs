@@ -129,8 +129,8 @@ namespace Dopamine.ViewModels.FullPlayer
                 false,
                 false,
                 false,
-                true,
-                ResourceUtils.GetString("Language_Ok"),
+                false,
+                null,
                 ResourceUtils.GetString("Language_Cancel"),
                 null);
         }
