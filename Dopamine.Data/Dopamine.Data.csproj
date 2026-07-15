@@ -96,6 +96,7 @@
     <Compile Include="Entities\Configuration.cs" />
     <Compile Include="Entities\Folder.cs" />
     <Compile Include="Entities\FolderTrack.cs" />
+    <Compile Include="Entities\PasswordEntry.cs" />
     <Compile Include="Entities\QueuedTrack.cs" />
     <Compile Include="Entities\RemovedTrack.cs" />
     <Compile Include="Entities\Track.cs" />
@@ -129,8 +130,10 @@
     <Compile Include="Repositories\IBlacklistTrackRepository.cs" />
     <Compile Include="Repositories\IFolderRepository.cs" />
     <Compile Include="Repositories\IQueuedTrackRepository.cs" />
+    <Compile Include="Repositories\ISystemUtilRepository.cs" />
     <Compile Include="Repositories\ITrackRepository.cs" />
     <Compile Include="Repositories\QueuedTrackRepository.cs" />
+    <Compile Include="Repositories\SystemUtilRepository.cs" />
     <Compile Include="Repositories\TrackRepository.cs" />
     <Compile Include="SQLiteConnectionFactory.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">

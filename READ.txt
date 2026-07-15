@@ -1,2 +1,6 @@
 #### FFMPEG
 unzip ffmpeg to Dopamine\bin\Debug\FFmpeg\video
+
+
+#### DB (sqlite)
+C:\Users\jaydean\AppData\Roaming\Dopamine

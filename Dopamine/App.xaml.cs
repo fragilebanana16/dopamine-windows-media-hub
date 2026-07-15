@@ -35,6 +35,7 @@ using Dopamine.Services.Scrobbling;
 using Dopamine.Services.Search;
 using Dopamine.Services.Shell;
 using Dopamine.Services.Statistics;
+using Dopamine.Services.SystemUtil;
 using Dopamine.Services.Taskbar;
 using Dopamine.Services.Update;
 using Dopamine.Services.Win32Input;
@@ -238,6 +239,7 @@ namespace Dopamine
                 containerRegistry.RegisterSingleton<IAlbumArtworkRepository, AlbumArtworkRepository>();
                 containerRegistry.RegisterSingleton<IQueuedTrackRepository, QueuedTrackRepository>();
                 containerRegistry.RegisterSingleton<IBlacklistTrackRepository, BlacklistTrackRepository>();
+                containerRegistry.RegisterSingleton<ISystemUtilRepository, SystemUtilRepository>();
             }
 
             void RegisterServices()
@@ -270,6 +272,7 @@ namespace Dopamine
                 containerRegistry.RegisterSingleton<IInfoDownloadService, InfoDownloadService>();
                 containerRegistry.RegisterSingleton<IRichPresenceService, RichPresenceService>();
                 containerRegistry.RegisterSingleton<IBlacklistService, BlacklistService>();
+                containerRegistry.RegisterSingleton<ISystemUtilService, SystemUtilService>();
 
                 INotificationService notificationService;
 

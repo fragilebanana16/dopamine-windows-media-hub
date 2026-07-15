@@ -119,7 +119,7 @@ namespace Dopamine.ViewModels.FullPlayer
             Privacy view = this.container.Resolve<Privacy>();
             view.DataContext = this.container.Resolve<PrivacyViewModel>();
 
-            this.dialogService.ShowModernCustomDialog(view);
+            this.dialogService.ShowModernCustomDialog(view, "Privacy");
             //this.dialogService.ShowCustomDialog(
             //    0xE8D6,
             //    16,

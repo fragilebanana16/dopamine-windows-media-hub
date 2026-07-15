@@ -106,11 +106,11 @@ namespace Dopamine.Services.Dialog
         }
 
 
-        public bool ShowModernCustomDialog(UserControl content)
+        public bool ShowModernCustomDialog(UserControl content, string title)
         {
             bool? result = Application.Current.Dispatcher.Invoke(() =>
             {
-                return ModernDialog.Show("自定义弹框", content);
+                return ModernDialog.Show(title, content);
             });
 
             return result ?? false;

@@ -25,7 +25,7 @@ namespace Dopamine.Data
         // NOTE: whenever there is a change in the database schema,
         // this version MUST be incremented and a migration method
         // MUST be supplied to match the new version number
-        protected const int CURRENT_VERSION = 27;
+        protected const int CURRENT_VERSION = 28;
         private ISQLiteConnectionFactory factory;
         private int userDatabaseVersion;
 
@@ -1104,6 +1104,36 @@ namespace Dopamine.Data
                              "SafePath	            TEXT);");
 
                 conn.Execute("CREATE INDEX BlacklistTrackSafePathIndex ON BlacklistTrack(SafePath);");
+
+                conn.Execute("COMMIT;");
+                conn.Execute("VACUUM;");
+            }
+        }
+
+        [DatabaseVersion(28)]
+        private void Migrate28()
+        {
+            using (var conn = this.factory.GetConnection())
+            {
+
+                conn.Execute("BEGIN TRANSACTION;");
+                conn.Execute("CREATE TABLE PasswordEntry (" +
+                             "PasswordID        INTEGER PRIMARY KEY AUTOINCREMENT," +
+                             "Title             TEXT NOT NULL," +             // 标题（必填）
+                             "Account           TEXT," +                      // 账号/用户名
+                             "Password          TEXT," +                      // 密码（强烈建议存储加密后的密文）
+                             "Url               TEXT," +                      // 相关网址
+                             "Type              TEXT," +                      // 类型（如: "Website", "App", "BankCard" 等）
+                             "Tags              TEXT," +                      // 标签（多个标签可用逗号分隔，如 "Work,Finance"）
+                             "Notes             TEXT," +                      // 备注
+                             "CreatedAt         TEXT," +                      // 创建时间
+                             "UpdatedAt         TEXT);");                     // 更新时间
+
+                // 针对标题（Title）创建索引，方便按名字模糊搜索
+                conn.Execute("CREATE INDEX PasswordEntryTitleIndex ON PasswordEntry(Title);");
+
+                // 针对类型（Type）创建索引，方便按类别筛选
+                conn.Execute("CREATE INDEX PasswordEntryTypeIndex ON PasswordEntry(Type);");
 
                 conn.Execute("COMMIT;");
                 conn.Execute("VACUUM;");

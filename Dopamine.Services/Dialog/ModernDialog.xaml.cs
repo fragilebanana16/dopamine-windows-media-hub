@@ -86,7 +86,18 @@ namespace Dopamine.Services.Dialog
                 Title = title,
                 Content = content
             };
+
+            dialog.Owner = Application.Current.MainWindow;
             return dialog.ShowDialog();
+        }
+
+        private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 1)
+            {
+                var window = Window.GetWindow(this);
+                window?.DragMove();
+            }
         }
     }
 }

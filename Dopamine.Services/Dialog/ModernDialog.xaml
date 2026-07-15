@@ -11,58 +11,138 @@
         SizeToContent="WidthAndHeight"
         WindowStartupLocation="CenterOwner"
         Title="{Binding Title, RelativeSource={RelativeSource Self}}"
-        Height="450" Width="800">
+        Height="450" Width="1800">
     <Window.Resources>
         <Style TargetType="Button" x:Key="DialogButton">
-            <Setter Property="Padding" Value="20,8"/>
-            <Setter Property="Margin" Value="8,0"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="Margin" Value="4,0"/>
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor" Value="Hand"/>
         </Style>
     </Window.Resources>
 
-    <Border Background="#FFFFFF" 
-            CornerRadius="12" 
-            BorderBrush="#E0E0E0" 
-            BorderThickness="1">
+    <Border x:Name="RootBorder"
+        Background="#FFFFFF"
+        CornerRadius="16"
+        Margin="24">
+        <Border.Effect>
+            <DropShadowEffect Color="#000000" 
+                           BlurRadius="32" 
+                           ShadowDepth="8" 
+                           Opacity="0.18" 
+                           Direction="270"/>
+        </Border.Effect>
+        <Border.Resources>
+            <Style x:Key="DialogButton" TargetType="Button">
+                <Setter Property="Height" Value="40"/>
+                <Setter Property="Padding" Value="20,0"/>
+                <Setter Property="Margin" Value="8,0,0,0"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="FontSize" Value="14"/>
+                <Setter Property="FontWeight" Value="Medium"/>
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Bg" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" CornerRadius="8">
+                                <ContentPresenter HorizontalAlignment="Center" 
+                                               VerticalAlignment="Center"
+                                               Content="{TemplateBinding Content}"
+                                               TextElement.Foreground="{TemplateBinding Foreground}"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bg" Property="Opacity" Value="0.85"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="Bg" Property="Opacity" Value="0.7"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="CloseButtonStyle" TargetType="Button">
+                <Setter Property="Width" Value="32"/>
+                <Setter Property="Height" Value="32"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Cursor" Value="Hand"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Bg" Background="{TemplateBinding Background}" CornerRadius="8">
+                                <Path x:Name="Icon"
+                                  Data="M4 4L20 20M20 4L4 20"
+                                  Stroke="#6B7280"
+                                  StrokeThickness="2"
+                                  StrokeStartLineCap="Round"
+                                  StrokeEndLineCap="Round"
+                                  Width="14" Height="14"
+                                  Stretch="Uniform"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bg" Property="Background" Value="#F3F4F6"/>
+                                    <Setter TargetName="Icon" Property="Stroke" Value="#1F2937"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="Bg" Property="Background" Value="#E5E7EB"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Border.Resources>
 
         <Grid>
-            <!-- 标题栏 -->
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <!-- 标题栏 -->
-            <Border Grid.Row="0" Background="#F8F9FA" CornerRadius="12,12,0,0" BorderBrush="#E0E0E0" BorderThickness="0,0,0,1">
-                <DockPanel Height="52" Margin="20,0">
+            <!-- 标题栏（可拖拽） -->
+            <Border x:Name="TitleBar" 
+                Grid.Row="0" 
+                Background="Transparent"
+                CornerRadius="16,16,0,0"
+                MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+                <DockPanel Height="56" Margin="24,0" LastChildFill="True">
+                    <Button DockPanel.Dock="Right" 
+            Style="{StaticResource CloseButtonStyle}"
+            Click="CloseButton_Click" 
+            VerticalAlignment="Center"/>
                     <TextBlock Text="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}" 
-                               FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" Foreground="#1F2937"/>
-
-                    <Button DockPanel.Dock="Right" Width="32" Height="32" 
-                            Background="Transparent" BorderThickness="0"
-                            Click="CloseButton_Click" VerticalAlignment="Center">
-                        <Path Data="M4 4L20 20M20 4L4 20" Stroke="#6B7280" StrokeThickness="2" Stretch="Uniform"/>
-                    </Button>
+               FontSize="17" FontWeight="SemiBold" 
+               VerticalAlignment="Center" 
+               Foreground="#111827"/>
                 </DockPanel>
             </Border>
 
             <!-- 内容区域 -->
-            <ContentPresenter Grid.Row="1" Margin="24,20" 
-                              Content="{Binding Content, RelativeSource={RelativeSource AncestorType=Window}}"/>
+            <ContentPresenter Grid.Row="1" 
+                           Margin="24,8,24,20" 
+                           Content="{Binding Content, RelativeSource={RelativeSource AncestorType=Window}}"/>
 
             <!-- 按钮栏 -->
-            <Border Grid.Row="2" Background="#F8F9FA" CornerRadius="0,0,12,12" BorderBrush="#E0E0E0" BorderThickness="0,1,0,0">
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="24,16">
+            <Border Grid.Row="2" 
+                Background="#FAFAFA" 
+                CornerRadius="0,0,16,16"
+                BorderBrush="#F0F0F0" 
+                BorderThickness="0,1,0,0">
+                <StackPanel Orientation="Horizontal" 
+                        HorizontalAlignment="Right" 
+                        Margin="24,14">
                     <Button Content="取消" Style="{StaticResource DialogButton}" 
-                            Background="#F3F4F6" Foreground="#374151"
-                            Click="CancelButton_Click"/>
-
+                        Background="#F3F4F6" Foreground="#374151"
+                        Click="CancelButton_Click"/>
                     <Button Content="确定" Style="{StaticResource DialogButton}" 
-                            Background="#3B82F6" Foreground="White"
-                            Click="OkButton_Click"/>
+                        Background="#3B82F6" Foreground="White"
+                        Click="OkButton_Click"/>
                 </StackPanel>
             </Border>
         </Grid>

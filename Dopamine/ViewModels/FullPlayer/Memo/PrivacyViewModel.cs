@@ -12,6 +12,10 @@ using System.ComponentModel;
 using Prism.Commands;
 using Prism.Mvvm;
 using System.Windows.Data;
+using System.Windows.Input;
+using Dopamine.Data.Repositories;
+using Dopamine.Services.Folders;
+using Dopamine.Services.SystemUtil;
 
 namespace Dopamine.ViewModels.FullPlayer.Memo
 {
@@ -99,6 +103,8 @@ namespace Dopamine.ViewModels.FullPlayer.Memo
         public DelegateCommand DeleteCommand { get; }
         public DelegateCommand ToggleShowPasswordCommand { get; }
 
+        public DelegateCommand LoadedCommand { get; private set; }
+
         private string _selectedCategory;
         public string SelectedCategory
         {
@@ -112,8 +118,13 @@ namespace Dopamine.ViewModels.FullPlayer.Memo
                 }
             }
         }
-        public PrivacyViewModel()
+
+        private ISystemUtilService systemService;
+
+        public PrivacyViewModel(ISystemUtilService systemService)
         {
+            this.systemService = systemService;
+
             // 初始化测试分类
             Categories = new List<string> { "全部", "社交", "金融", "图书音像", "户外运动", "食品生鲜", "服装鞋帽" };
             // 模拟数据
@@ -147,10 +158,24 @@ namespace Dopamine.ViewModels.FullPlayer.Memo
             CancelEditCommand = new DelegateCommand(ExecuteCancelEdit, CanCancelEdit);
             DeleteCommand = new DelegateCommand(ExecuteDelete, CanDelete);
             ToggleShowPasswordCommand = new DelegateCommand(() => ShowPassword = !ShowPassword);
+            LoadedCommand = new DelegateCommand(async () => await GetpasswordAsync());
 
             if (Accounts.Count > 0)
             {
                 SelectedAccount = Accounts[0];
+            }
+        }
+
+        private async Task GetpasswordAsync()
+        {
+            try
+            {
+                var passwords = await systemService.GetPasswordEntryAsync();
+                // 更新你绑定的 ObservableCollection 列表...
+            }
+            catch (Exception ex)
+            {
+                // 异常处理
             }
         }
 
