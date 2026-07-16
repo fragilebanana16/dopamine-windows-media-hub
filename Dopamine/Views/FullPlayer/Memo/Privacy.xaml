@@ -27,10 +27,11 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="200"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-
+                
                 <!-- 左侧列表：绑定到 AccountsView，SelectedItem 双向绑定 -->
                 <Border HorizontalAlignment="Stretch" Background="{DynamicResource Brush_SearchBoxbackground}">
                     <pc:SearchBox x:Name="SearchBox"
@@ -91,13 +92,12 @@
                             </ListBox.ItemContainerStyle>
                         </ListBox>
                     </ScrollViewer>
-
-                    <ListBox Grid.Row="2" ItemsSource="{Binding AccountsView}"
+                <ListBox Grid.Row="2" ItemsSource="{Binding AccountsView}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"
          SelectedItem="{Binding SelectedAccount, Mode=TwoWay}"
          Background="Transparent" BorderThickness="0">
                         <ListBox.ItemContainerStyle>
                             <Style TargetType="ListBoxItem">
-                                <Setter Property="Template">
+                            <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="ListBoxItem">
                                             <Border x:Name="ItemBg" Background="Transparent" CornerRadius="6" Padding="10,8" Margin="0,0,0,6" Cursor="Hand">
@@ -152,6 +152,21 @@
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
+
+                <StackPanel Grid.Row="4" Background="#1A1A34" Margin="10">
+                    <TextBlock Text="--- 调试面板 ---" Foreground="Gray"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="当前选中 Title: " Foreground="White"/>
+                        <TextBlock Text="{Binding SelectedAccount.Title, FallbackValue='【无数据】'}" Foreground="LightGreen" FontWeight="Bold"/>
+                    </StackPanel>
+
+                    <!-- 2. 输出 SelectedAccount 的 Account 属性 -->
+                    <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                        <TextBlock Text="当前选中 Account: " Foreground="White"/>
+                        <TextBlock Text="{Binding SelectedAccount.Account, FallbackValue='【无数据】'}" Foreground="LightBlue"/>
+                    </StackPanel>
+                </StackPanel>
+
             </Grid>
         </Border>
 
@@ -172,8 +187,19 @@
                                HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Border>
                     <StackPanel VerticalAlignment="Center">
-                        <TextBlock Text="{Binding SelectedAccount.Title}" FontSize="16" FontWeight="Bold" Foreground="White"/>
-                        <TextBlock Text="{Binding SelectedAccount.Account}"  FontSize="11" Foreground="#5C5C7A"/>
+                        <TextBlock Text="{Binding SelectedAccount.Title}" 
+               FontSize="16" 
+               FontWeight="Bold" 
+               Foreground="White"
+               TextTrimming="CharacterEllipsis"
+               MaxWidth="80"
+               ToolTip="{Binding SelectedAccount.Title}"/>
+                        <TextBlock Text="{Binding SelectedAccount.Account}"  
+               FontSize="11" 
+               Foreground="#5C5C7A"
+               TextTrimming="CharacterEllipsis"
+               MaxWidth="80"
+               ToolTip="{Binding SelectedAccount.Account}"/>
                     </StackPanel>
                 </StackPanel>
 
@@ -188,7 +214,7 @@
             </Grid>
 
             <!-- 表单内容 -->
-            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Width="240">
                 <StackPanel>
 
                     <!-- 账号：正常可编辑 TextBox -->

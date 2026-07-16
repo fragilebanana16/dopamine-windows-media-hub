@@ -140,6 +140,7 @@
     <Compile Include="Entities\ArtistViewModel.cs" />
     <Compile Include="Entities\FolderViewModel.cs" />
     <Compile Include="Entities\GenreViewModel.cs" />
+    <Compile Include="Entities\PasswordEntryViewModel.cs" />
     <Compile Include="Entities\PlaylistViewModel.cs" />
     <Compile Include="Entities\SemanticZoomSelectorViewModel.cs" />
     <Compile Include="Entities\SmartPlaylistLimitViewModel.cs" />
