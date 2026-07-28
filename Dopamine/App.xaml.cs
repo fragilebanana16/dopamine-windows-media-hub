@@ -48,6 +48,7 @@ using Dopamine.Views.FullPlayer;
 using Dopamine.Views.FullPlayer.Collection;
 using Dopamine.Views.FullPlayer.Information;
 using Dopamine.Views.FullPlayer.Settings;
+using Dopamine.Views.FullPlayer.Vault;
 using Dopamine.Views.FullPlayer.Video;
 using Dopamine.Views.MiniPlayer;
 using Dopamine.Views.NowPlaying;
@@ -351,6 +352,7 @@ namespace Dopamine
                 containerRegistry.Register<object, CollectionHome>(typeof(CollectionHome).FullName);
                 containerRegistry.Register<object, CollectionHomeSubOverview>(typeof(CollectionHomeSubOverview).FullName);
                 containerRegistry.Register<object, CollectionHomeSubSearch>(typeof(CollectionHomeSubSearch).FullName);
+                containerRegistry.Register<object, CollectionHomeVault>(typeof(CollectionHomeVault).FullName);
 
                 // Video
                 containerRegistry.Register<object, MovieTheater>(typeof(MovieTheater).FullName);

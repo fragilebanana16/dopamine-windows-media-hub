@@ -40,6 +40,8 @@
     {
         Overview = 0,
         Search = 1,
+        Vault  = 2,
+        Key    = 3,
     }
 
     public enum SettingsPage

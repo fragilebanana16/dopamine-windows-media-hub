@@ -108,6 +108,11 @@
                     <RadioButton Tag="&#xE7F4;" Content="剧集" ContentTemplate="{StaticResource SafeNavContentTemplate}" Style="{StaticResource NavRadioButtonStyle}"/>
                     <RadioButton Tag="&#xE720;" Content="播客" ContentTemplate="{StaticResource SafeNavContentTemplate}" Style="{StaticResource NavRadioButtonStyle}"/>
 
+                    <TextBlock Text="Vault" FontSize="13" Foreground="#A0A0A6" Margin="20,20,0,8" FontWeight="Medium"/>
+                    <RadioButton Tag="&#xEA18;" Content="保险库" ContentTemplate="{StaticResource SafeNavContentTemplate}" Style="{StaticResource NavRadioButtonStyle}" Command="{Binding HomeNavigateCommand}" 
+                 CommandParameter="{x:Static enums:HomeRegion.Vault}"/>
+                    <RadioButton Tag="&#xE8D7;" Content="钥匙" ContentTemplate="{StaticResource SafeNavContentTemplate}" Style="{StaticResource NavRadioButtonStyle}" />
+                    
                     <TextBlock Text="管理" FontSize="13" Foreground="#A0A0A6" Margin="20,20,0,8" FontWeight="Medium"/>
 
                     <RadioButton Tag="&#xE8B7;" Content="媒体库管理" ContentTemplate="{StaticResource SafeNavContentTemplate}" Style="{StaticResource NavRadioButtonStyle}"/>

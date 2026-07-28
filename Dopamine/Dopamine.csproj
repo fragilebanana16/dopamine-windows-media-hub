@@ -572,6 +572,9 @@
     <Compile Include="Views\FullPlayer\Settings\SettingsStartup.xaml.cs">
       <DependentUpon>SettingsStartup.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\FullPlayer\Vault\CollectionHomeVault.xaml.cs">
+      <DependentUpon>CollectionHomeVault.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\FullPlayer\Video\MovieTheater.xaml.cs">
       <DependentUpon>MovieTheater.xaml</DependentUpon>
     </Compile>
@@ -1495,6 +1498,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\FullPlayer\Settings\SettingsStartup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FullPlayer\Vault\CollectionHomeVault.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

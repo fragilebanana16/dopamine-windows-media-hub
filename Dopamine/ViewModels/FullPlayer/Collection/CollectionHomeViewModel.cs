@@ -13,6 +13,7 @@ using Digimezzo.Foundation.WPF.Controls;
 using Dopamine.Core.Enums;
 using Dopamine.Core.Prism;
 using Dopamine.Views.FullPlayer.Collection;
+using Dopamine.Views.FullPlayer.Vault;
 
 namespace Dopamine.ViewModels.FullPlayer.Collection
 {
@@ -67,7 +68,9 @@ namespace Dopamine.ViewModels.FullPlayer.Collection
                 case HomeRegion.Search:
                     this._regionManager.RequestNavigate(RegionNames.HomeMainContentRegion, typeof(CollectionHomeSubSearch).FullName);
                     break;
-
+                case HomeRegion.Vault:
+                    this._regionManager.RequestNavigate(RegionNames.HomeMainContentRegion, typeof(CollectionHomeVault).FullName);
+                    break;
                 default:
                     break;
             }
