@@ -6,7 +6,108 @@
              xmlns:local="clr-namespace:Dopamine.Views.FullPlayer.Vault"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style x:Key="PillTabItemStyle" TargetType="TabItem">
+            <Setter Property="Padding" Value="24,8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="Bg" CornerRadius="18" Padding="{TemplateBinding Padding}">
+                            <Border.Background>
+                                <SolidColorBrush Color="Transparent"/>
+                            </Border.Background>
+                            <Border.RenderTransform>
+                                <ScaleTransform x:Name="ScaleT" ScaleX="1" ScaleY="1"/>
+                            </Border.RenderTransform>
+                            <Border.RenderTransformOrigin>0.5,0.5</Border.RenderTransformOrigin>
+                            <ContentPresenter ContentSource="Header" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="Bg"
+                                                        Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                        To="Red" Duration="0:0:0.18"/>
+                                            <DoubleAnimation Storyboard.TargetName="ScaleT"
+                                                          Storyboard.TargetProperty="ScaleX"
+                                                          From="0.92" To="1" Duration="0:0:0.15"/>
+                                            <DoubleAnimation Storyboard.TargetName="ScaleT"
+                                                          Storyboard.TargetProperty="ScaleY"
+                                                          From="0.92" To="1" Duration="0:0:0.15"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="Bg"
+                                                        Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                        To="Transparent" Duration="0:0:0.18"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                                <Setter Property="Foreground" Value="#1A1D21"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="False">
+                                <Setter Property="Foreground" Value="#8A8F98"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Foreground" Value="#C7CAD1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                        <ControlTemplate.Resources/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PillTabControlStyle" TargetType="TabControl">
+            <Setter Property="TabStripPlacement" Value="Bottom"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabControl">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <ContentPresenter Grid.Row="0" ContentSource="SelectedContent" Margin="0,0,0,16"/>
+                            <Border Grid.Row="1" HorizontalAlignment="Center" Margin="0,0,0,20"
+                            Background="#F1F2F4" CornerRadius="20" Padding="4">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#000000" Opacity="0.08" BlurRadius="12" ShadowDepth="2"/>
+                                </Border.Effect>
+                                <TabPanel IsItemsHost="True"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
     <Grid>
-        <TextBlock>Test Vault</TextBlock>
+        <TabControl Style="{StaticResource PillTabControlStyle}">
+            <TabItem Header="Vault" Style="{StaticResource PillTabItemStyle}">
+                <ListBox Margin="16">
+                    <ListBoxItem Content="Vault Item 1"/>
+                    <ListBoxItem Content="Vault Item 2"/>
+                </ListBox>
+            </TabItem>
+            <TabItem Header="Credentials" Style="{StaticResource PillTabItemStyle}" IsEnabled="False">
+                <ListBox Margin="16">
+                    <ListBoxItem Content="Credential Item 1"/>
+                </ListBox>
+            </TabItem>
+            <TabItem Header="Setting" Style="{StaticResource PillTabItemStyle}">
+                <ListBox Margin="16">
+                    <ListBoxItem Content="Setting Item 1"/>
+                </ListBox>
+            </TabItem>
+        </TabControl>
     </Grid>
 </UserControl>
