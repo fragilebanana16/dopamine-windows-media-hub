@@ -7,6 +7,453 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
+        <SolidColorBrush x:Key="AccentBrush" Color="#6366F1" />
+        <SolidColorBrush x:Key="AccentHoverBrush" Color="#4F46E5" />
+        <SolidColorBrush x:Key="AccentPressedBrush" Color="#4338CA" />
+        <SolidColorBrush x:Key="AppBackgroundBrush" Color="#F8FAFC" />
+        <SolidColorBrush x:Key="SurfaceBrush" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="SurfaceAltBrush" Color="#F8FAFC" />
+        <SolidColorBrush x:Key="SurfaceHoverBrush" Color="#F1F5F9" />
+        <SolidColorBrush x:Key="SidebarBrush" Color="#0F172A" />
+        <SolidColorBrush x:Key="SidebarUserCardBrush" Color="#172033" />
+        <SolidColorBrush x:Key="SidebarUserCardBorderBrush" Color="#3A4962" />
+        <SolidColorBrush x:Key="SidebarUserPrimaryBrush" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="SidebarUserSecondaryBrush" Color="#B5C2D3" />
+        <SolidColorBrush x:Key="SidebarNavTextBrush" Color="#C7D2E3" />
+        <SolidColorBrush x:Key="SidebarNavDisabledTextBrush" Color="#7B8797" />
+        <SolidColorBrush x:Key="SidebarNavSelectedTextBrush" Color="#FFFFFF" />
+        <SolidColorBrush x:Key="SidebarNavSelectionBrush" Color="#4F46E5" />
+        <SolidColorBrush x:Key="SidebarVersionTextBrush" Color="#91A3BA" />
+        <SolidColorBrush x:Key="TitleBarButtonBrush" Color="#182235" />
+        <SolidColorBrush x:Key="TitleBarButtonHoverBrush" Color="#27364D" />
+        <SolidColorBrush x:Key="TitleBarButtonBorderBrush" Color="#40516B" />
+        <SolidColorBrush x:Key="TitleBarButtonForegroundBrush" Color="#D3DCE9" />
+        <SolidColorBrush x:Key="TextPrimaryBrush" Color="#0F172A" />
+        <SolidColorBrush x:Key="TextSecondaryBrush" Color="#64748B" />
+        <SolidColorBrush x:Key="TextTertiaryBrush" Color="#94A3B8" />
+        <SolidColorBrush x:Key="BorderBrush" Color="#E2E8F0" />
+        <SolidColorBrush x:Key="InputBorderBrush" Color="#CBD5E1" />
+        <SolidColorBrush x:Key="AccentSurfaceBrush" Color="#EEF2FF" />
+        <SolidColorBrush x:Key="AccentTextBrush" Color="#4338CA" />
+        <SolidColorBrush x:Key="DangerBrush" Color="#DC2626" />
+        <SolidColorBrush x:Key="DangerSurfaceBrush" Color="#FEF2F2" />
+        <SolidColorBrush x:Key="DangerHoverBrush" Color="#FEE2E2" />
+        <SolidColorBrush x:Key="DangerPressedBrush" Color="#FECACA" />
+        <SolidColorBrush x:Key="DangerTextBrush" Color="#991B1B" />
+        <SolidColorBrush x:Key="WarningSurfaceBrush" Color="#FFF7ED" />
+        <SolidColorBrush x:Key="WarningBorderBrush" Color="#FED7AA" />
+        <SolidColorBrush x:Key="WarningTextBrush" Color="#C2410C" />
+        <SolidColorBrush x:Key="SuccessTextBrush" Color="#15803D" />
+
+        <Style x:Key="ExitVaultButton" TargetType="{x:Type Button}">
+            <Setter Property="Padding" Value="14,7" />
+            <Setter Property="Foreground" Value="{DynamicResource DangerBrush}" />
+            <Setter Property="Background" Value="{DynamicResource DangerSurfaceBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border
+                            x:Name="ButtonBorder"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="{DynamicResource DangerHoverBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="{DynamicResource DangerPressedBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="NavItemStyle" TargetType="{x:Type ListViewItem}">
+            <Setter Property="Height" Value="46" />
+            <Setter Property="Margin" Value="12,3" />
+            <Setter Property="Padding" Value="14,0" />
+            <Setter Property="Foreground" Value="{DynamicResource SidebarNavTextBrush}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                        <Border
+                        x:Name="NavBorder"
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="9">
+                            <ContentPresenter VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="NavBorder" Property="Background" Value="{DynamicResource SidebarNavSelectionBrush}" />
+                                <Setter Property="Foreground" Value="{DynamicResource SidebarNavSelectedTextBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="NavBorder" Property="Background" Value="{DynamicResource SidebarNavSelectionBrush}" />
+                                <Setter Property="Foreground" Value="{DynamicResource SidebarNavSelectedTextBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="NavBorder" Property="Background" Value="Transparent" />
+                                <Setter Property="Foreground" Value="{DynamicResource SidebarNavDisabledTextBrush}" />
+                                <Setter Property="Cursor" Value="Arrow" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="GridViewColumnHeaderStyle1" TargetType="{x:Type GridViewColumnHeader}">
+            <Setter Property="Height" Value="42" />
+            <Setter Property="Padding" Value="16,0" />
+            <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+            <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="0,0,0,1" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+        </Style>
+
+        <Style x:Key="DataListStyle" TargetType="{x:Type ListView}">
+            <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+            <Setter Property="SelectionMode" Value="Single" />
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="MinHeight" Value="44" />
+                        <Setter Property="Padding" Value="16,0" />
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="VerticalContentAlignment" Value="Center" />
+                        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource SurfaceHoverBrush}" />
+                        <Setter Property="BorderThickness" Value="0,0,0,1" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <Border
+                                    x:Name="RowBorder"
+                                    Padding="{TemplateBinding Padding}"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}">
+                                        <GridViewRowPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="RowBorder" Property="Background" Value="{DynamicResource SurfaceAltBrush}" />
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter TargetName="RowBorder" Property="Background" Value="#4F46E5" />
+                                            <Setter TargetName="RowBorder" Property="BorderBrush" Value="#4338CA" />
+                                            <Setter TargetName="RowBorder" Property="BorderThickness" Value="4,0,0,1" />
+                                            <Setter Property="Foreground" Value="White" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="IconActionBorderStyle" TargetType="{x:Type Border}">
+            <Setter Property="Background" Value="{DynamicResource SurfaceAltBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="11,7" />
+            <Setter Property="Margin" Value="0,0,8,0" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+
+        <Style x:Key="ModernContextMenuStyle" TargetType="{x:Type ContextMenu}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HasDropShadow" Value="False" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ContextMenu}">
+                        <Border
+                        Padding="6"
+                        Background="{DynamicResource SurfaceBrush}"
+                        BorderBrush="{DynamicResource BorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="10">
+                            <Border.Effect>
+                                <DropShadowEffect
+                                BlurRadius="18"
+                                Opacity="0.18"
+                                ShadowDepth="5"
+                                Color="#0F172A" />
+                            </Border.Effect>
+                            <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Cycle" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ModernMenuItemStyle" TargetType="{x:Type MenuItem}">
+            <Setter Property="Height" Value="38" />
+            <Setter Property="MinWidth" Value="230" />
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type MenuItem}">
+                        <Border
+                        x:Name="MenuItemBorder"
+                        Margin="0,1"
+                        Padding="10,0"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="7">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="25" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter
+                                Width="17"
+                                Height="17"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                ContentSource="Icon" />
+                                <ContentPresenter
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                ContentSource="Header"
+                                RecognizesAccessKey="True" />
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="MenuItemBorder" Property="Background" Value="#4F46E5" />
+                                <Setter Property="Foreground" Value="White" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.45" />
+                                <Setter Property="Cursor" Value="Arrow" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style
+        x:Key="ModernDangerMenuItemStyle"
+        BasedOn="{StaticResource ModernMenuItemStyle}"
+        TargetType="{x:Type MenuItem}">
+            <Setter Property="Foreground" Value="#DC2626" />
+        </Style>
+
+        <Style x:Key="ModernMenuSeparatorStyle" TargetType="{x:Type Separator}">
+            <Setter Property="Margin" Value="10,5" />
+            <Setter Property="Height" Value="1" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Separator}">
+                        <Border Height="1" Background="{DynamicResource BorderBrush}" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SettingsInputStyle" TargetType="{x:Type TextBox}">
+            <Setter Property="Height" Value="42" />
+            <Setter Property="Padding" Value="12,0" />
+            <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource InputBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="14" />
+        </Style>
+
+        <Style x:Key="SettingsComboBoxItemStyle" TargetType="{x:Type ComboBoxItem}">
+            <Setter Property="MinHeight" Value="34" />
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ComboBoxItem}">
+                        <Border
+                        x:Name="ItemBorder"
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="6">
+                            <ContentPresenter
+                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                            VerticalAlignment="Center"
+                            TextElement.Foreground="{TemplateBinding Foreground}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="{DynamicResource SurfaceHoverBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="{DynamicResource AccentSurfaceBrush}" />
+                                <Setter Property="Foreground" Value="{DynamicResource AccentTextBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SettingsComboBoxStyle" TargetType="{x:Type ComboBox}">
+            <Setter Property="Height" Value="42" />
+            <Setter Property="Padding" Value="10,0" />
+            <Setter Property="Background" Value="{DynamicResource SurfaceBrush}" />
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource InputBorderBrush}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="ItemContainerStyle" Value="{StaticResource SettingsComboBoxItemStyle}" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ComboBox}">
+                        <Grid>
+                            <Border
+                            x:Name="ComboBorder"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8">
+                                <Grid>
+                                    <ContentPresenter
+                                    Margin="{TemplateBinding Padding}"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Content="{TemplateBinding SelectionBoxItem}"
+                                    ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
+                                    ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+                                    TextElement.Foreground="{TemplateBinding Foreground}" />
+                                    <Path
+                                    Margin="0,0,12,0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Data="M 0 0 L 4 4 L 8 0"
+                                    Stroke="{DynamicResource TextSecondaryBrush}"
+                                    StrokeThickness="1.5" />
+                                </Grid>
+                            </Border>
+                            <ToggleButton
+                            Background="Transparent"
+                            BorderThickness="0"
+                            ClickMode="Press"
+                            Focusable="False"
+                            IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                                        <Border Background="Transparent" />
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <Popup
+                            x:Name="PART_Popup"
+                            AllowsTransparency="True"
+                            IsOpen="{TemplateBinding IsDropDownOpen}"
+                            Placement="Bottom"
+                            PopupAnimation="Fade">
+                                <Border
+                                MinWidth="{Binding ActualWidth, RelativeSource={RelativeSource TemplatedParent}}"
+                                Margin="0,4,0,0"
+                                Padding="4"
+                                Background="{DynamicResource SurfaceBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="8">
+                                    <ScrollViewer MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                        <ItemsPresenter />
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ComboBorder" Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                                <Setter TargetName="ComboBorder" Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.55" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="PopupMenuButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border
+                        x:Name="PopupButtonBorder"
+                        Padding="{TemplateBinding Padding}"
+                        Background="{TemplateBinding Background}"
+                        CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="PopupButtonBorder" Property="Background" Value="{DynamicResource SurfaceHoverBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style
+        x:Key="PopupDangerButtonStyle"
+        BasedOn="{StaticResource PopupMenuButtonStyle}"
+        TargetType="{x:Type Button}">
+            <Setter Property="Foreground" Value="{DynamicResource DangerBrush}" />
+        </Style>
+
         <Style x:Key="PillTabItemStyle" TargetType="TabItem">
             <Setter Property="Padding" Value="24,8"/>
             <Setter Property="FontSize" Value="13"/>
@@ -90,24 +537,361 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid>
+
+    <Border Margin="20">
         <TabControl Style="{StaticResource PillTabControlStyle}">
-            <TabItem Header="Vault" Style="{StaticResource PillTabItemStyle}">
-                <ListBox Margin="16">
-                    <ListBoxItem Content="Vault Item 1"/>
-                    <ListBoxItem Content="Vault Item 2"/>
-                </ListBox>
+            <TabItem Header="vaultTab" Style="{StaticResource PillTabItemStyle}">
+                <Grid Background="{DynamicResource Brush_PaneBackground}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="16" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock
+                        FontSize="24"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource Brush_PrimaryText}"
+                        Text="Your vaults" />
+                            <TextBlock
+                        Margin="0,5,0,0"
+                        FontSize="13"
+                        Foreground="{DynamicResource Brush_SecondaryText}"
+                        Text="Open a vault to view and manage its saved credentials." />
+                        </StackPanel>
+                        <Border
+                    Grid.Column="1"
+                    Padding="12,8"
+                    VerticalAlignment="Center"
+                    Background="{DynamicResource Brush_ItemSelected}"
+                    CornerRadius="9">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock
+                            Name="vaultStorageIcon"
+                            Width="18"
+                            Height="18"
+                            Margin="0,0,7,0"
+                            Foreground="#4F46E5" />
+                                <TextBlock
+                            Name="vaultStorageLabel"
+                            VerticalAlignment="Center"
+                            FontSize="12"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource Brush_PrimaryText}"
+                            Text="Select a vault" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <Border
+                Grid.Row="3"
+                Background="{DynamicResource Brush_MainWindowBackground}"
+                BorderBrush="{DynamicResource Brush_ControlBorder}"
+                BorderThickness="1"
+                CornerRadius="12">
+                        <ListView
+                    Name="vaultList"
+                    Margin="8,8,8,0"
+                    Style="{StaticResource DataListStyle}">
+                            <ListView.View>
+                                <GridView ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
+                                    <GridViewColumn
+                                Width="225"
+                                DisplayMemberBinding="{Binding Name}"
+                                Header="Vault name" />
+                                    <GridViewColumn
+                                Width="150"
+                                DisplayMemberBinding="{Binding Storage}"
+                                Header="Storage" />
+                                    <GridViewColumn
+                                Width="205"
+                                DisplayMemberBinding="{Binding CreateDate}"
+                                Header="Created" />
+                                    <GridViewColumn
+                                Width="210"
+                                DisplayMemberBinding="{Binding SharePoint}"
+                                Header="Location" />
+                                </GridView>
+                            </ListView.View>
+                            <ListView.ContextMenu>
+                                <ContextMenu Style="{StaticResource ModernContextMenuStyle}">
+                                    <MenuItem
+                                Header="Export vault"
+                                Style="{StaticResource ModernMenuItemStyle}"
+                                Tag="2">
+                                        <MenuItem.Icon>
+                                            <TextBlock />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem
+                                Header="Change master password"
+                                Style="{StaticResource ModernMenuItemStyle}"
+                                Tag="2">
+                                        <MenuItem.Icon>
+                                            <TextBlock />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <Separator Style="{StaticResource ModernMenuSeparatorStyle}" />
+                                    <MenuItem
+                                Header="Delete or remove vault"
+                                Style="{StaticResource ModernDangerMenuItemStyle}"
+                                Tag="2">
+                                        <MenuItem.Icon>
+                                            <TextBlock />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
+                        </ListView>
+                    </Border>
+
+                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                        <Border
+                    Style="{StaticResource IconActionBorderStyle}"
+                    ToolTip="Add Vault">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock
+                            Name="AddVaultIcon"
+                            Width="17"
+                            Height="17"
+                            Margin="0,0,7,0"
+                            Foreground="#4F46E5" />
+                                <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="12"
+                            FontWeight="SemiBold"
+                            Foreground="#334155"
+                            Text="New vault" />
+                            </StackPanel>
+                        </Border>
+                        <Border
+                    Style="{StaticResource IconActionBorderStyle}"
+                    ToolTip="Import Vault">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock
+                            Name="ImportVaultIcon"
+                            Width="17"
+                            Height="17"
+                            Margin="0,0,7,0"
+                            Foreground="#4F46E5" />
+                                <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="12"
+                            FontWeight="SemiBold"
+                            Foreground="#334155"
+                            Text="Import" />
+                            </StackPanel>
+                        </Border>
+                        <Border
+                    Style="{StaticResource IconActionBorderStyle}"
+                    ToolTip="Delete or remove vault">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock
+                            Name="DelVaultIcon"
+                            Width="17"
+                            Height="17"
+                            Margin="0,0,7,0"
+                            Foreground="#DC2626" />
+                                <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="12"
+                            FontWeight="SemiBold"
+                            Foreground="#991B1B"
+                            Text="Remove" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
             </TabItem>
-            <TabItem Header="Credentials" Style="{StaticResource PillTabItemStyle}" IsEnabled="False">
-                <ListBox Margin="16">
-                    <ListBoxItem Content="Credential Item 1"/>
-                </ListBox>
+            <TabItem Name="appTab" Header="Applications"  Style="{StaticResource PillTabItemStyle}">
+                <Grid Background="{DynamicResource Brush_MainWindowBackground}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="16" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock
+                    FontSize="24"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource Brush_PrimaryText}"
+                    Text="Saved credentials" />
+                            <StackPanel Margin="0,5,0,0" Orientation="Horizontal">
+                                <TextBlock
+                        FontSize="13"
+                        Foreground="{DynamicResource Brush_SecondaryText}"
+                        Text="Entries in " />
+                                <TextBlock
+                        Name="appListVaultLVL"
+                        FontSize="13"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource Brush_CoverTileIcon}"
+                        Text="vault" />
+                            </StackPanel>
+                        </StackPanel>
+                        <StackPanel
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+                            <TextBlock
+                    Width="18"
+                    Height="18"
+                    Margin="0,0,7,0"
+                    Foreground="{DynamicResource Brush_PrimaryText}" />
+
+                            <TextBlock
+                    VerticalAlignment="Center"
+                    FontSize="12"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource Brush_PrimaryText}"
+                    Text="Vault unlocked" />
+                        </StackPanel>
+                    </Grid>
+                    <Border
+            Grid.Row="3"
+            Background="{DynamicResource Brush_WindowHeaderBackground}"
+            BorderBrush="{DynamicResource Brush_ControlBorder}"
+            BorderThickness="1"
+            CornerRadius="12">
+                        <ListView
+                Name="appList"
+                Margin="8,8,8,0"
+                Style="{StaticResource DataListStyle}">
+                            <ListView.View>
+                                <GridView
+                        ColumnHeaderContainerStyle="{StaticResource GridViewColumnHeaderStyle1}">
+                                    <GridViewColumn
+                            Width="260"
+                            DisplayMemberBinding="{Binding Application}"
+                            Header="Application" />
+                                    <GridViewColumn
+                            Width="260"
+                            DisplayMemberBinding="{Binding Account}"
+                            Header="Account" />
+                                    <GridViewColumn
+                            Width="270"
+                            DisplayMemberBinding="{Binding Password}"
+                            Header="Password" />
+                                </GridView>
+                            </ListView.View>
+                            <ListView.ContextMenu>
+                                <ContextMenu Style="{StaticResource ModernContextMenuStyle}">
+                                    <MenuItem
+                            Header="Copy password for 15 seconds"
+                            Style="{StaticResource ModernMenuItemStyle}"
+                            Tag="1">
+                                        <MenuItem.Icon>
+                                            <TextBlock />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem
+                            Header="Show password"
+                            Style="{StaticResource ModernMenuItemStyle}"
+                            Tag="2">
+                                        <MenuItem.Icon>
+                                            <TextBlock />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem
+                            Header="Update account password"
+                            Style="{StaticResource ModernMenuItemStyle}"
+                            Tag="2">
+                                        <MenuItem.Icon>
+                                            <TextBlock />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <Separator
+                            Style="{StaticResource ModernMenuSeparatorStyle}" />
+                                    <MenuItem
+                            Header="Delete account"
+                            Style="{StaticResource ModernDangerMenuItemStyle}"
+                            Tag="2">
+                                        <MenuItem.Icon>
+                                            <TextBlock />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </ListView.ContextMenu>
+                        </ListView>
+                    </Border>
+                    <Grid Grid.Row="2">
+                        <StackPanel Orientation="Horizontal">
+                            <Border
+                    Style="{StaticResource IconActionBorderStyle}"
+                    ToolTip="Add Application">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                            Name="AddAppIcon"
+                            Width="17"
+                            Height="17"
+                            Margin="0,0,7,0"
+                            Foreground="{DynamicResource Brush_CoverTileIcon}" />
+                                    <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="12"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource Brush_PrimaryText}"
+                            Text="New credential" />
+                                </StackPanel>
+                            </Border>
+                            <Border
+                    Style="{StaticResource IconActionBorderStyle}"
+                    ToolTip="Delete Application">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock
+                            x:Name="DelApp"
+                            Width="17"
+                            Height="17"
+                            Margin="0,0,7,0"
+                            Foreground="#DC2626" />
+
+                                    <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="12"
+                            FontWeight="SemiBold"
+                            Foreground="#991B1B"
+                            Text="Delete" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                        <StackPanel
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+
+                            <TextBlock
+                    Name="logoutIconV"
+                    Width="18"
+                    Height="18"
+                    Margin="0,0,4,0"
+                    VerticalAlignment="Center"
+                    Foreground="#DC2626" />
+                            <Button
+                    Name="vaultCloseLBL"
+                    Content="Lock vault"
+                    Style="{DynamicResource ExitVaultButton}"/>
+                        </StackPanel>
+                    </Grid>
+                </Grid>
             </TabItem>
-            <TabItem Header="Setting" Style="{StaticResource PillTabItemStyle}">
+            <TabItem Header="Setting" Style="{StaticResource PillTabItemStyle}" IsEnabled="False">
                 <ListBox Margin="16">
                     <ListBoxItem Content="Setting Item 1"/>
                 </ListBox>
             </TabItem>
         </TabControl>
-    </Grid>
+    </Border>
 </UserControl>
